@@ -14,8 +14,8 @@ def solve(ph_par, mesh, tdis, qx, verb = 1):
     Dl   = ph_par["longitudinal_dispersivity"]
     R    = ph_par["retardation_factor"]
     Dr   = ph_par["decay_rate"]
-    Dh   = ph_par["dispersion_coefficient"]
-    
+    Dh   = ph_par["dispersion_coefficient"]  #!!!! Ya viene dividido por el factor de retardo R
+  
     Lx = mesh.row_length
     Ly = mesh.col_length
     Lz = mesh.lay_length
@@ -37,8 +37,9 @@ def solve(ph_par, mesh, tdis, qx, verb = 1):
     #------------------------------------------------------------------------------------------#
     
     q_frnts = np.zeros(nx+1)                       #Vector de q en las fronteras (puede tomarse un esquema upwind o TVD, etc 
-    q_i = np.zeros(nx)                             #Vector de q en los nodos o centros "i" 
-    q_i= qx[0][0][:]/Por    #para tomar el esquema tradicional por diferencias finitas
+    q_i = np.zeros(nx)                            #Vector de q en los nodos o centros "i" 
+    q_i= qx[0][0][:]            #para tomar descargas especificas del esquema tradicional por diferencias finitas
+    v_i= qx[0][0][:]/(Por*R)    #para tomar velocidades del esquema tradicional por diferencias finitas
 
 
     #------------------------------------------------------------------------------------------#
@@ -78,18 +79,23 @@ def solve(ph_par, mesh, tdis, qx, verb = 1):
         #--------------------------------------------------------------------------------------# 
         
         for i in range(0, nx):                                                               #Se calculó la transmisibilidad en todos los nodos ya que se considera el nodo fantasma para las condiciones de frontera, entonces, el nodo en nx+1/2 se utilizará en B
-            TE[i] = q_i[i]/(2*delta_x)-Dh/delta_x**2                             #Transmisibilidad en xi+1/2
-            TW[i] =-q_i[i]/(2*delta_x)-Dh/delta_x**2                              #Transmisibilidad en xi-1/2    
-            TC[i] = 1/dt+(2*Dh)/delta_x**2
+            TE[i] = v_i[i]/(2*delta_x)-Dh/delta_x**2                             #Transmisibilidad en xi+1/2
+            TW[i] =-v_i[i]/(2*delta_x)-Dh/delta_x**2                              #Transmisibilidad en xi-1/2    
+            TC[i] = 1/dt+(2*Dh)/delta_x**2+Dr
             
+            if i==0:  # VCs=vC-dC/dx  CF Robbin 
+
+                v_inf=v_i[0]
+                Cte_rhs=v_inf*cs/(Dh/delta_x)   #Parte del rhs
+                Cte_coeff=(Dh/delta_x-(v_i[0]))/(Dh/delta_x)   #Parte del sistema de ecuaciones lineales
+                TC[i]=TC[i]+Cte_coeff*TW[i]  
             # Condicion a la frontera
      
             if i==nx-1:
-                TC[i]=TC[i]+TE[i]  #"No flujo" o Neumann 
+                TC[i]=TC[i]+TE[i]  #"Gradiente de concentracion 0" dC/dx=0 
                 
             if i == 0:
-                # B[i] =  ((teta/dt)*(c_n[i]))+(r*cr)-2*TW[i]*c_inf              #Condición de frontera izquierda Dirichlet (primera clase)
-                B[i] =  c_n[i]/dt-TW[i]*cs
+                B[i] =  c_n[i]/dt-Cte_rhs*TW[i]
             else:
                 B[i] =  c_n[i]/dt
             
