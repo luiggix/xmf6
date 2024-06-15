@@ -152,16 +152,16 @@ class Wexler1d:
             concold = conc
         return conc
 
-def sol_analytical_t(i, x, atimes, mesh, pparams, x_axis_time=True):
+def sol_analytical_t(idx, i, x, atimes, mesh, pparams, x_axis_is_time=False):
     
     a1 = Wexler1d().analytical2(x, atimes, 
                                 pparams["specific_discharge"] / pparams["retardation_factor"],
                                 mesh.row_length, 
                                 pparams["dispersion_coefficient"], 
                                 pparams["decay_rate"])
-    idx = 0
+#    idx = i
     
-    if x_axis_time:
+    if x_axis_is_time:
         if idx == 0:
             idx_filter = a1 < 0
             a1[idx_filter] = 0
@@ -181,7 +181,7 @@ def sol_analytical_t(i, x, atimes, mesh, pparams, x_axis_time=True):
                 idx_filter = x > 9
             a1[idx_filter] = 0.0
         
-    return a1, idx_filter
+    return a1
 
 
 import os, sys
@@ -221,7 +221,7 @@ lon_dis = [0.1, 1.0, 1.0, 1.0]
 ret_fac = [1.0, 1.0, 2.0, 1.0]
 dec_rat = [0.0, 0.0, 0.0, 0.01]
 
-for path, l_d, r_f, d_r in zip(scenarios, lon_dis, ret_fac, dec_rat):
+for idx, (path, l_d, r_f, d_r) in enumerate(zip(scenarios, lon_dis, ret_fac, dec_rat)):
     print('\nScenario : {}'.format(path))
     print(l_d, r_f, d_r)
     ph_par['longitudinal_dispersivity'] = l_d
@@ -233,16 +233,16 @@ for path, l_d, r_f, d_r in zip(scenarios, lon_dis, ret_fac, dec_rat):
 
     atimes = np.arange(0, 120, 0.1)
     for i, x in enumerate([0.05, 4.05, 11.05]):
-        a1, idx_filter = sol_analytical_t(i, x, atimes, mesh, ph_par)
+        a1 = sol_analytical_t(idx, i, x, atimes, mesh, ph_par)
         np.save(path + 'a1_t_' + str(i), a1)
-        np.save(path + 'idxfl_t_' + str(i), idx_filter)
+        np.save(path + 'idxfl_t_' + str(i), idx)
         print("\n>Solución en x = {}".format(x))
     
     ctimes = [6.0, 60.0, 120.0]
     x, _, _ = mesh.get_coords()
     for i, t in enumerate(ctimes):
-        a1, idx_filter = sol_analytical_t(i, x, t, mesh, ph_par, False)
+        a1 = sol_analytical_t(idx, i, x, t, mesh, ph_par, False)
         np.save(path + 'a1_x_' + str(i), a1)
-        np.save(path + 'idxfl_x_' + str(i), idx_filter)
+        np.save(path + 'idxfl_x_' + str(i), idx)
         print("\n>Solución en t = {}".format(t))
 

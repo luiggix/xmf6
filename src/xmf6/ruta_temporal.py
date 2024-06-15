@@ -1,8 +1,11 @@
-import os, sys
+import os, sys, platform
 c_path = os.getcwd()
-l_path = c_path.split(sep="\\")
+
+sep = "\\" if platform.system() == "Windows" else "/"
+
+l_path = c_path.split(sep=sep)
 i_wma = l_path.index('xmf6')
-a_path = '\\'.join(l_path[:i_wma])
-src_path = '\\xmf6\\src'
+a_path = sep.join(l_path[:i_wma])
+src_path = sep.join(['','xmf6','src'])
 if not(src_path in sys.path[0]):
     sys.path.insert(0, os.path.abspath(a_path + src_path)) 
