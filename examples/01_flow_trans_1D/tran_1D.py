@@ -1,4 +1,3 @@
-
 import os, sys   # Intefaces con el sistema operativo.
 import numpy as np # Manejo de arreglos numéricos multidimensionales
 import matplotlib.pyplot as plt # Graficación
@@ -53,8 +52,8 @@ def build_gwt_1D(mesh, tdis, ph_par, ml_units, os_par, oc_par):
     Objeto que gestiona atributos y métodos de una malla rectangular
     estructurada y uniforme.
 
-    tm_par: dict
-    Diccionario con los parámetros del tiempo.
+    tdis: TDis
+    Objeto que gestiona los parámetros del tiempo.
 
     ph_par: dict
     Diccionario con los parámetros físicos del problema.

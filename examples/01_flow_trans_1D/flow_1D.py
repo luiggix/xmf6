@@ -10,8 +10,8 @@ def build_gwf_1D(mesh, tdis, ph_par, ml_units, os_par, oc_par):
     Objeto que gestiona atributos y métodos de una malla rectangular
     estructurada y uniforme.
 
-    tm_par: dict
-    Diccionario con los parámetros del tiempo.
+    tdis: TDis
+    Objeto que gestiona atributos del tiempo.
 
     ph_par: dict
     Diccionario con los parámetros físicos del problema.
