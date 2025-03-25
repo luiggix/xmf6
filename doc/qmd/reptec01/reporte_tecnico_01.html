@@ -11,11 +11,11 @@
 <script src="reporte_tecnico_01_files/libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="reporte_tecnico_01_files/libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="reporte_tecnico_01_files/libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.4.551">
+  <meta name="generator" content="quarto-1.4.550">
 
   <meta name="author" content="Luis Miguel de la Cruz Salas">
   <meta name="dcterms.date" content="2024-09-09">
-  <title>Descripción del software</title>
+  <title>Modelos Numéricos y Computacionales</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -390,13 +390,16 @@
       margin-right: 0; 
     }
   </style>
+  <script src="reporte_tecnico_01_files/libs/quarto-diagram/mermaid.min.js"></script>
+  <script src="reporte_tecnico_01_files/libs/quarto-diagram/mermaid-init.js"></script>
+  <link href="reporte_tecnico_01_files/libs/quarto-diagram/mermaid.css" rel="stylesheet">
 </head>
 <body class="quarto-light">
   <div class="reveal">
     <div class="slides">
 
 <section id="title-slide" class="quarto-title-block center">
-  <h1 class="title">Descripción del software</h1>
+  <h1 class="title">Modelos Numéricos y Computacionales</h1>
 
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
@@ -411,6 +414,44 @@ Luis Miguel de la Cruz Salas
 
   <p class="date">2024-09-09</p>
 </section>
+<section>
+<section id="wma" class="title-slide slide level1 center">
+<h1>WMA</h1>
+
+</section>
+<section id="wma-for-reactive-transport." class="slide level2 scrollable">
+<h2>WMA for reactive transport.</h2>
+<div class="columns">
+<div class="column">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><a href="./figuras/WMA_flowchart.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img data-src="./figuras/WMA_flowchart.png" class="quarto-figure quarto-figure-center" style="width:50.0%" alt="applied WMA formulation to reactive transport."></a></p>
+</figure>
+</div>
+</div><div class="column">
+<div class="cell" data-reveal="true" data-fig-width="10.5" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class=""><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+  A[Start time step simulation] --&gt; A1[GWF-MODFLOW 6]
+  A1 --&gt; B{λ computed}
+  B --&gt; C[Calculate λ between Water zones targets]
+  C &amp; B --&gt; E[texto]
+  E --&gt; F[mas texto]
+  F --&gt; G{otra decision}
+  G --&gt; H{otra decision}
+  H --&gt; I[End time step simulation]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section></section>
 <section>
 <section id="solución-del-flujo." class="title-slide slide level1 center">
 <h1>Solución del flujo.</h1>
@@ -429,7 +470,7 @@ Q^\prime_s = SS \frac{\partial h}{\partial t} \tag{1}
 \]</span></p>
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><a href="./figuras/mesh_3D_mf6.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img data-src="./figuras/mesh_3D_mf6.png" class="quarto-figure quarto-figure-center" style="width:50.0%" alt="Malla 3D"></a></p>
+<p><a href="./figuras/mesh_3D_mf6.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img data-src="./figuras/mesh_3D_mf6.png" class="quarto-figure quarto-figure-center" style="width:50.0%" alt="Malla 3D"></a></p>
 </figure>
 </div>
 <aside><ol class="aside-footnotes"><li id="fn1"><p><a href="https://doi.org/10.3133/tm6A61">Langevin, C.D., Provost, A.M., Panday, Sorab, and Hughes, J.D., 2022, Documentation for the MODFLOW 6 Groundwater Transport Model: U.S. Geological Survey Techniques and Methods, book 6, chap.&nbsp;A61, 56 p.</a></p></li></ol></aside></section>
@@ -546,13 +587,13 @@ K_{xx} &amp; 0 &amp; 0 \\
 <p><strong>Componentes.</strong></p>
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><a href="./figuras/components_mf6.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img data-src="./figuras/components_mf6.png" class="quarto-figure quarto-figure-center" style="width:50.0%" alt="Componentes de MODFLOW 6"></a></p>
+<p><a href="./figuras/components_mf6.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img data-src="./figuras/components_mf6.png" class="quarto-figure quarto-figure-center" style="width:50.0%" alt="Componentes de MODFLOW 6"></a></p>
 </figure>
 </div>
 <p><strong>Paquetes.</strong></p>
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><a href="./figuras/gwf_mf6.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img data-src="./figuras/gwf_mf6.png" class="quarto-figure quarto-figure-center" style="width:50.0%" alt="Paquetes de MODFLOW 6"></a></p>
+<p><a href="./figuras/gwf_mf6.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4"><img data-src="./figuras/gwf_mf6.png" class="quarto-figure quarto-figure-center" style="width:50.0%" alt="Paquetes de MODFLOW 6"></a></p>
 </figure>
 </div>
 </section>
@@ -955,7 +996,7 @@ q ...: (1, 1, 120)
 <span id="cb12-13"><a href=""></a>ax1.grid(<span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><a href="./figuras/head.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4"><img data-src="./figuras/head.png" class="quarto-figure quarto-figure-center" style="width:50.0%" alt="Carga hidráulica"></a></p>
+<p><a href="./figuras/head.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5"><img data-src="./figuras/head.png" class="quarto-figure quarto-figure-center" style="width:50.0%" alt="Carga hidráulica"></a></p>
 </figure>
 </div>
 </div>
@@ -978,13 +1019,13 @@ q ...: (1, 1, 120)
 <p><strong>Modelos de solución.</strong></p>
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><a href="./figuras/gwt_mf6.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5"><img data-src="./figuras/gwt_mf6.png" class="quarto-figure quarto-figure-center" style="width:50.0%" alt="Componentes de MODFLOW 6"></a></p>
+<p><a href="./figuras/gwt_mf6.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6"><img data-src="./figuras/gwt_mf6.png" class="quarto-figure quarto-figure-center" style="width:50.0%" alt="Componentes de MODFLOW 6"></a></p>
 </figure>
 </div>
 <p><strong>Paquetes.</strong></p>
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><a href="./figuras/gwt_pack_mf6.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6"><img data-src="./figuras/gwt_pack_mf6.png" class="quarto-figure quarto-figure-center" style="width:50.0%" alt="Paquetes de MODFLOW 6"></a></p>
+<p><a href="./figuras/gwt_pack_mf6.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7"><img data-src="./figuras/gwt_pack_mf6.png" class="quarto-figure quarto-figure-center" style="width:50.0%" alt="Paquetes de MODFLOW 6"></a></p>
 </figure>
 </div>
 </section>
@@ -1331,7 +1372,7 @@ Caso: p01d</code></pre>
 <span id="cb22-40"><a href=""></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><a href="./figuras/p01d.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7"><img data-src="./figuras/p01d.png" class="quarto-figure quarto-figure-center" style="width:50.0%" alt="Carga hidráulica"></a></p>
+<p><a href="./figuras/p01d.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8"><img data-src="./figuras/p01d.png" class="quarto-figure quarto-figure-center" style="width:50.0%" alt="Carga hidráulica"></a></p>
 </figure>
 </div>
 </div>
@@ -1654,24 +1695,6 @@ Caso: p01d</code></pre>
         // clear code selection
         e.clearSelection();
       });
-        var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
-        var mailtoRegex = new RegExp(/^mailto:/);
-          var filterRegex = new RegExp('/' + window.location.host + '/');
-        var isInternal = (href) => {
-            return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
-        }
-        // Inspect non-navigation links and adorn them if external
-     	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
-        for (var i=0; i<links.length; i++) {
-          const link = links[i];
-          if (!isInternal(link.href)) {
-            // undo the damage that might have been done by quarto-nav.js in the case of
-            // links that we want to consider external
-            if (link.dataset.originalHref !== undefined) {
-              link.href = link.dataset.originalHref;
-            }
-          }
-        }
       function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
         const config = {
           allowHTML: true,
@@ -1708,11 +1731,7 @@ Caso: p01d</code></pre>
           try { href = new URL(href).hash; } catch {}
           const id = href.replace(/^#\/?/, "");
           const note = window.document.getElementById(id);
-          if (note) {
-            return note.innerHTML;
-          } else {
-            return "";
-          }
+          return note.innerHTML;
         });
       }
       const findCites = (el) => {
@@ -1754,7 +1773,7 @@ Caso: p01d</code></pre>
       }
     });
     </script>
-    <script>var lightboxQuarto = GLightbox({"openEffect":"zoom","closeEffect":"zoom","loop":false,"descPosition":"bottom","selector":".lightbox"});
+    <script>var lightboxQuarto = GLightbox({"openEffect":"zoom","closeEffect":"zoom","selector":".lightbox","loop":false,"descPosition":"bottom"});
     window.onload = () => {
       lightboxQuarto.on('slide_before_load', (data) => {
         const { slideIndex, slideNode, slideConfig, player, trigger } = data;

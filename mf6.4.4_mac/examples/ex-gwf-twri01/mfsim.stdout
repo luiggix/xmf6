@@ -1,0 +1,37 @@
+ 
+mf6: all screen output sent to mfsim.stdout
+ 
+
+                                   MODFLOW 6
+                U.S. GEOLOGICAL SURVEY MODULAR HYDROLOGIC MODEL
+                            VERSION 6.4.4 02/13/2024
+
+   MODFLOW 6 compiled Feb 13 2024 17:58:17 with Intel(R) Fortran Intel(R) 64
+   Compiler Classic for applications running on Intel(R) 64, Version 2021.7.0
+                             Build 20220726_000000
+
+This software has been approved for release by the U.S. Geological 
+Survey (USGS). Although the software has been subjected to rigorous 
+review, the USGS reserves the right to update the software as needed 
+pursuant to further analysis and review. No warranty, expressed or 
+implied, is made by the USGS or the U.S. Government as to the 
+functionality of the software and related material nor shall the 
+fact of release constitute any such warranty. Furthermore, the 
+software is released on condition that neither the USGS nor the U.S. 
+Government shall be held liable for any damages resulting from its 
+authorized or unauthorized use. Also refer to the USGS Water 
+Resources Software User Rights Notice for complete use, copyright, 
+and distribution information.
+
+ 
+ Run start date and time (yyyy/mm/dd hh:mm:ss): 2024/04/11 11:46:46
+ 
+ Writing simulation list file: mfsim.lst
+ Using Simulation name file: mfsim.nam
+ 
+    Solving:  Stress period:     1    Time step:     1
+ 
+ Run end date and time (yyyy/mm/dd hh:mm:ss): 2024/04/11 11:46:46
+ Elapsed run time:  0.072 Seconds
+ 
+ Normal termination of simulation.

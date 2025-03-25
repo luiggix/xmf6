@@ -1,5 +1,5 @@
 ---
-title: "Descripción del software"
+title: "Modelos Numéricos y Computacionales"
 author: "Luis Miguel de la Cruz Salas"
 institute: "Depto. de Recursos Naturales, IGEF-UNAM"
 date: "9/09/24"
@@ -14,6 +14,36 @@ format:
     show-slide-number: all
     css: math.scss
 ---
+
+# WMA
+
+## WMA for reactive transport. {.scrollable}
+
+:::: {.columns}
+
+::: {.column}
+![](./figuras/WMA_flowchart.png){fig-align="center"  fig-alt="applied WMA formulation to reactive transport." width=50% .lightbox}
+:::
+
+::: {.column}
+```{mermaid}
+%%| fig-width: 10.5
+flowchart TD
+  A[Start time step simulation] --> A1[GWF-MODFLOW 6]
+  A1 --> B{λ computed}
+  B --> C[Calculate λ between Water zones targets]
+  C & B --> E[texto]
+  E --> F[mas texto]
+  F --> G{otra decision}
+  G --> H{otra decision}
+  H --> I[End time step simulation]
+```
+:::
+
+
+
+:::: 
+
 
 # Solución del flujo.
 
