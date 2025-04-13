@@ -438,4 +438,5 @@ TSWLatexianTemp*
 ##################### xmf6 files to ignore #####################
 
 examples/01_flow_trans_1D/output/
+*output/
 
