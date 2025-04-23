@@ -15,5 +15,5 @@ package-dir = {"" = "src"}
 packages = ["xmf6"]
 #license-files = ["MIT"]
 
-#[tool.setuptools.package-data]
-#"biblio" = ["../resources/*"]
+[tool.setuptools.package-data]
+"biblio" = ["../examples/*"]

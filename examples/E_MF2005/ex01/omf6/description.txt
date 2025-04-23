@@ -1,1 +1,0 @@
-This is the TWRI problem described in the MODFLOW-2005 documentation and included with the MODFLOW-2005 examples.
