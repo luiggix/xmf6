@@ -1,15 +1,19 @@
 import os
 from colorama import Fore, Style, Back
 import flopy
+#from xmf6.mesh import MeshDis
+#from xmf6.tdis import TDis
 
 def nice_print(data, message = ''):
-    size = len(message)
-    fmt = '{:^'+str(size)+'}'
     print(Fore.BLUE)
     print(message)
-    print(fmt.format(size * chr(0x2015)) + Style.RESET_ALL)
-    data.print()
-    print(Fore.BLUE + fmt.format(size * chr(0x2015)) + Style.RESET_ALL)
+    print('{:^30}'.format(30*'-') + Style.RESET_ALL)
+
+    if isinstance(data, dict):
+        for k,v in data.items():
+            print('{:>20} = {:<10}'.format(k, v))
+    else: #if not isinstance(data, dict):# or isinstance(data, TDis):
+        data.print()
 
 class OSPar():
     """
@@ -57,11 +61,11 @@ class OSPar():
     def print(self):
         print('         Workspace = {:12s}'.format(self.__workspace))
         print('     MODFLOW 6 exe = {:12s}'.format(self.__mf6exe))
-        print('     Flow sim name = {:12s}'.format(self.__flow_name))
+        print('         Flow name = {:12s}'.format(self.__flow_name))
         print('         Head file = {:12s}'.format(self.__head_file))
         print('     h Budget file = {:12s}'.format(self.__hbudget_file))
         if self.__transport_name != "":
-            print('Transport sim name = {:12s}'.format(self.__transport_name))
+            print('    Transport name = {:12s}'.format(self.__transport_name))
         if self.__concentration_file != "":
             print('Concentration file = {:12s}'.format(self.__concentration_file))
         if self.__cbudget_file != "":
@@ -162,9 +166,9 @@ class OFiles():
 
 if __name__ == '__main__':
 
-    ospar = OSPar(ws = "test1", exe = "test12", 
-                  fn = "test123", hf = "test1234", hbf = "test 12345")
+    ospar = OSPar(ws = "test", exe = "test", 
+                  fn = "test", hf = "test", hbf = "test")
 
     from osys import nice_print
-    nice_print(ospar, 'Testing ... mucho texto')
+    nice_print(ospar, 'Testing ...')
 

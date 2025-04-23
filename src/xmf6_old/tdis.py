@@ -22,18 +22,22 @@ class TDis():
         for i, p in enumerate(self.__perioddata):
             print('{:3d} {:>10.2f} {:>10.2f} {:>10.2f} {:>10.2e}'.format(i+1, p[0], p[1], p[2], self.__dt[i]))
 
+    @property
     def nper(self):
         return self.__nper
 
+    @property
     def total_time(self):
         return self.__total_time
 
+#    @property
     def perioddata(self, i = -1):
         if i < 0:
             return self.__perioddata
         else:
             return self.__perioddata[i]
 
+#    @property
     def dt(self, i = -1):
         if i < 0:
             return self.__dt
@@ -46,13 +50,13 @@ if __name__ == '__main__':
                  (120.0, 60, 1.0),
                  (65.5, 30, 1.2)] # perlen, nstp, tsmult
     tdis = TDis(perioddata)
-    print(tdis.nper())
-    print(tdis.total_time())
+    print(tdis.nper)
+    print(tdis.total_time)
     print(tdis.perioddata(0))
     print(tdis.dt(0))
     print(tdis.perioddata())
     print(tdis.dt())
 
-    from output import nice_print
+    from osys import nice_print
     nice_print(tdis, 'Testing ...')
 
