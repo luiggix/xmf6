@@ -4,6 +4,19 @@ import matplotlib.pyplot as plt # Graficación
 # Biblioteca y módulos de flopy
 from flopy.plot.styles import styles
 
+def cax(ax, cb):
+    # Configuramos un espacio adecuado para la barra de color
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes("right", "3%", pad="3%")
+    cax.set_xticks([])
+    cax.set_yticks([])
+    cax.spines['bottom'].set_visible(False)
+    cax.spines['left'].set_visible(False)
+    cax.set_facecolor(fig.get_facecolor())
+    
+    return cax
+
+    
 def plot(ax, x, y, **par):
     with styles.USGSPlot():
         plt.rcParams['font.family'] = 'DeJavu Sans'
