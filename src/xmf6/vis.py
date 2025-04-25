@@ -1,5 +1,6 @@
 import numpy as np # Manejo de arreglos numéricos multidimensionales
 import matplotlib.pyplot as plt # Graficación
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 # Biblioteca y módulos de flopy
 from flopy.plot.styles import styles
@@ -12,7 +13,7 @@ def cax(ax, cb):
     cax.set_yticks([])
     cax.spines['bottom'].set_visible(False)
     cax.spines['left'].set_visible(False)
-    cax.set_facecolor(fig.get_facecolor())
+    cax.set_facecolor(ax.get_figure().get_facecolor())
     
     return cax
 
