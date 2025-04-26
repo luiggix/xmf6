@@ -1,6 +1,10 @@
 import os
 from colorama import Fore, Style, Back
+import numpy as np
 import flopy
+
+def info_array(x): 
+    print(f' tipo  : {type(x)} \n dtype : {x.dtype} \n dim   : {x.ndim} \n shape : {x.shape} \n size(bytes) : {x.itemsize} \n size(elements) : {x.size}')
 
 def nice_print(data, message = ''):
     size = len(message)
@@ -167,4 +171,7 @@ if __name__ == '__main__':
 
     from osys import nice_print
     nice_print(ospar, 'Testing ... mucho texto')
+
+    x = np.linspace(0,1,10)
+    info_array(x)
 
