@@ -1,3 +1,7 @@
+"""
+@author: Luis M. de la Cruz [Updated on Wed May 14 18:00:33 CST 2025].
+"""
+
 import flopy
 
 def build(conf, time, mesh, ic_data, chd_data, k_data):
@@ -38,7 +42,9 @@ def build(conf, time, mesh, ic_data, chd_data, k_data):
         exe_name = conf["mf6_exe"],
         sim_ws   = conf["sim_ws"]
     )
-    
+
+    ### --- COMPONENTES ---
+
     # --- Tiempos de simulación ---
     o_tdis = flopy.mf6.ModflowTdis(
         simulation = o_sim,
