@@ -4,8 +4,10 @@ from .osys import nice_print, info_array, OFiles, OSPar
 from .physpar import PhysPar
 from .tdis import TDis
 from .vis import plot, scatter
+import xmf6.gwf 
 
 __all__ = ["MeshDis", 
            "nice_print", "info_array", "OFiles", "OSPar",
-           "PhysPar", "TDis", "plot", "scatter"
+           "PhysPar", "TDis", "plot", "scatter",
+           "gwf"
            ]

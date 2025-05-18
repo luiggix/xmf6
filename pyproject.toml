@@ -12,7 +12,7 @@ dependencies = ["flopy", "colorama"]
 
 [tool.setuptools]
 package-dir = {"" = "src"}
-packages = ["xmf6"]
+packages = ["xmf6", "xmf6.gwf"]
 #license-files = ["MIT"]
 
 [tool.setuptools.package-data]

@@ -38,8 +38,8 @@ def build(conf, time, mesh, ic_data, chd_data, k_data):
     """
     # --- Inicialización de la simulación ---
     o_sim = flopy.mf6.MFSimulation(
-        sim_name = conf["model_name"],
-        exe_name = conf["mf6_exe"],
+        sim_name = conf["sim_name"],
+        exe_name = conf["exe_name"],
         sim_ws   = conf["sim_ws"]
     )
 
@@ -61,8 +61,8 @@ def build(conf, time, mesh, ic_data, chd_data, k_data):
     # --- Modelo GWF ---
     o_gwf = flopy.mf6.ModflowGwf(
         simulation = o_sim,
-        modelname = conf["model_name"],
-        model_nam_file = f"{conf["model_name"]}.nam",
+        modelname = conf["sim_name"],
+        model_nam_file = f"{conf["sim_name"]}.nam",
         save_flows = True # Almacena los flujos, particularmente el budget
     )
     
@@ -103,8 +103,8 @@ def build(conf, time, mesh, ic_data, chd_data, k_data):
     # --- Configuración de la salida ---
     o_oc = flopy.mf6.ModflowGwfoc(
         model = o_gwf,
-        budget_filerecord = f"{conf["model_name"]}.bud",
-        head_filerecord = f"{conf["model_name"]}.hds",
+        budget_filerecord = f"{conf["sim_name"]}.bud",
+        head_filerecord = f"{conf["sim_name"]}.hds",
         saverecord = [("HEAD", "ALL"), ("BUDGET", "ALL")],
         printrecord = [("HEAD", "ALL")]
     )
