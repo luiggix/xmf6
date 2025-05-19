@@ -436,6 +436,6 @@ TSWLatexianTemp*
 .DS_Store
 
 ##################### xmf6 files to ignore #####################
-tests/
+#tests/
 *output/
 *sandbox*/
