@@ -437,5 +437,5 @@ TSWLatexianTemp*
 
 ##################### xmf6 files to ignore #####################
 #tests/
-*output/
+*output*/
 *sandbox*/
