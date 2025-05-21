@@ -12,8 +12,11 @@ def nice_print(data, message = ''):
     print(Fore.BLUE)
     print(message)
     print(fmt.format(size * chr(0x2015)) + Style.RESET_ALL)
-    data.print()
+    for k,v in data.items():
+        print('{:>20} = {:<10}'.format(k, v))
+    #data.print()
     print(Fore.BLUE + fmt.format(size * chr(0x2015)) + Style.RESET_ALL)
+
 
 class OSPar():
     """
