@@ -8,14 +8,23 @@ def info_array(x):
 
 def nice_print(data, message = ''):
     size = len(message)
-    fmt = '{:^'+str(size)+'}'
+    fmt1 = '{:^'+str(size)+'}'
+    
+    max_len = reduce(max, [len(k) for k in data.keys()])
+    fmt2 = '{:>' + str(max_len) + '} = {}'
+
     print(Fore.BLUE)
     print(message)
-    print(fmt.format(size * chr(0x2015)) + Style.RESET_ALL)
+    print(fmt1.format(size * chr(0x2015)) + Style.RESET_ALL)
     for k,v in data.items():
-        print('{:>20} = {:<10}'.format(k, v))
-    #data.print()
-    print(Fore.BLUE + fmt.format(size * chr(0x2015)) + Style.RESET_ALL)
+        if isinstance(v, list):
+            print(fmt2.format(k, Fore.BLUE + chr(0x2015) + chr(0x2015) + " data array " \
+                              + chr(0x2015) + chr(0x2015) + Style.RESET_ALL ))
+            for l in v:
+                print(fmt2.format("  ", l))
+        else:
+            print(fmt2.format(k, v))
+    print(Fore.BLUE + fmt1.format(size * chr(0x2015)) + Style.RESET_ALL)
 
 
 class OSPar():
