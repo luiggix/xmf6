@@ -10,9 +10,12 @@ def info_array(x):
 def nice_print(data, message = ''):
     size = len(message)
     fmt1 = '{:^'+str(size)+'}'
-    
-    max_len = reduce(max, [len(k) for k in data.keys()])
-    fmt2 = '{:>' + str(max_len) + '} = {}'
+
+    if len(data.keys()): # Checa si hay datos
+        max_len = reduce(max, [len(k) for k in data.keys()])
+        fmt2 = '{:>' + str(max_len) + '} = {}'
+    else:
+        fmt2 = '{:>' + str(10) + '} = {}'
 
     print(Fore.BLUE)
     print(message)
