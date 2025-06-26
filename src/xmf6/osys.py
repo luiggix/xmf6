@@ -1,5 +1,6 @@
 import os
 from colorama import Fore, Style, Back
+from functools import reduce
 import numpy as np
 import flopy
 
