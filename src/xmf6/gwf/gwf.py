@@ -5,9 +5,10 @@
 import os
 import numpy as np
 import flopy
+from xmf6 import nice_print
 
 def initialize(silent = False, **kwargs):
-    par = set_par(kwargs["init"], get_sim_par, "\nsim configuration:", silent)
+    par = set_par(kwargs["init"], get_sim_par, "\nsim configuration", silent)
     o_sim = flopy.mf6.MFSimulation(
         sim_name = par["sim_name"],
         version  = par["version"],
@@ -20,7 +21,7 @@ def initialize(silent = False, **kwargs):
         write_headers = par["write_headers"]
     )
 
-    par = set_par(kwargs["time"], get_time_par, "\ntime configuration:", silent)     
+    par = set_par(kwargs["time"], get_time_par, "\ntime configuration", silent)     
     o_tdis = flopy.mf6.ModflowTdis(
         simulation = o_sim,  
         loading_package = par["loading_package"], 
@@ -33,7 +34,7 @@ def initialize(silent = False, **kwargs):
         pname = par["pname"]
     )
 
-    par = set_par(kwargs["ims"], get_ims_par, "\nnumerical solution configuration:", silent)
+    par = set_par(kwargs["ims"], get_ims_par, "\nnumerical solution configuration", silent)
     o_ims = flopy.mf6.ModflowIms(
         simulation = o_sim, 
         loading_package=par["loading_package"], 
@@ -76,7 +77,7 @@ def initialize(silent = False, **kwargs):
 
 def build(o_sim, silent = False, **kwargs):
 
-    par = set_par(kwargs["gwf"], get_gwf_par, "\nnumerical model configuration:", silent)
+    par = set_par(kwargs["gwf"], get_gwf_par, "\nnumerical model configuration", silent)
     o_gwf = flopy.mf6.ModflowGwf(
         simulation = o_sim, 
         modelname=par["modelname"], 
@@ -93,7 +94,7 @@ def build(o_sim, silent = False, **kwargs):
     )
     
     if "dis" in kwargs:
-        par = set_par(kwargs["dis"], get_dis_par, "\nspatial discretization configuration:", silent)
+        par = set_par(kwargs["dis"], get_dis_par, "\nspatial discretization configuration", silent)
         o_dis = flopy.mf6.ModflowGwfdis(
             model = o_gwf,
             loading_package=par["loading_package"], 
@@ -116,7 +117,7 @@ def build(o_sim, silent = False, **kwargs):
         )
 
     if "ic" in kwargs:
-        par = set_par(kwargs["ic"], get_ic_par, "\ninitial conditions configuration:", silent)
+        par = set_par(kwargs["ic"], get_ic_par, "\ninitial conditions configuration", silent)
         o_ic = flopy.mf6.ModflowGwfic(
             model = o_gwf,
             loading_package=par["loading_package"], 
@@ -128,7 +129,7 @@ def build(o_sim, silent = False, **kwargs):
         )
 
     if "chd" in kwargs:
-        par = set_par(kwargs["chd"], get_chd_par, "\nboundary conditions configuration:", silent)
+        par = set_par(kwargs["chd"], get_chd_par, "\nboundary conditions configuration", silent)
         o_chd = flopy.mf6.ModflowGwfchd(
             model = o_gwf,
             loading_package=par["loading_package"], 
@@ -148,7 +149,7 @@ def build(o_sim, silent = False, **kwargs):
         )
 
     if "npf" in kwargs:
-        par = set_par(kwargs["npf"], get_npf_par, "\nflow properties configuration:", silent)
+        par = set_par(kwargs["npf"], get_npf_par, "\nflow properties configuration", silent)
         o_npf = flopy.mf6.ModflowGwfnpf(
             model = o_gwf,
             loading_package=par["loading_package"], 
@@ -177,7 +178,7 @@ def build(o_sim, silent = False, **kwargs):
         )
 
     if "oc" in kwargs:
-        par = set_par(kwargs["oc"], get_oc_par, "\noutput configuration:", silent)
+        par = set_par(kwargs["oc"], get_oc_par, "\noutput configuration", silent)
         o_oc = flopy.mf6.ModflowGwfoc(
             model = o_gwf,
             loading_package=par["loading_package"], 
@@ -192,7 +193,7 @@ def build(o_sim, silent = False, **kwargs):
         )
 
     if "well" in kwargs:
-        par = set_par(kwargs["well"], get_well_par, "\nwells configuration:", silent)
+        par = set_par(kwargs["well"], get_well_par, "\nwells configuration", silent)
         o_well = flopy.mf6.ModflowGwfwel(
             model = o_gwf,
             loading_package=par["loading_package"], 
@@ -250,12 +251,14 @@ def set_par(key_par, function, message, silent = False):
     par: dict
         Diccionario con los parámetros para la clave solicitada.
     """
-    if not silent: print(f"\n{message}:")
+#    if not silent: print(f"\n{message}:")
     par = function()
     for k, v in key_par.items():
-        if not silent: print(f"  {k} = {v}")
+#        if not silent: print(f"  {k} = {v}")
         par[k] = v  
-    if not silent: print(f"---\n")
+#    if not silent: print(f"---\n")
+    if not silent:
+        xmf6.nice_print(par, message)
     return par
 
 def get_sim_par():
