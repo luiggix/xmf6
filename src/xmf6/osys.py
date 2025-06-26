@@ -21,7 +21,7 @@ def nice_print(data, message = ''):
     print(message)
     print(fmt1.format(size * chr(0x2015)) + Style.RESET_ALL)
     for k,v in data.items():
-        if isinstance(v, list):
+        if isinstance(v, list) or isinstance(v, np.ndarray) or isinstance(v, tuple):
             print(fmt2.format(k, Fore.BLUE + chr(0x2015) + chr(0x2015) + " data array " \
                               + chr(0x2015) + chr(0x2015) + Style.RESET_ALL ))
             for l in v:
