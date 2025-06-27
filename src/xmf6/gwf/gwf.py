@@ -2,10 +2,15 @@
 @author: Luis M. de la Cruz [Updated on Wed May 14 18:00:33 CST 2025].
 """
 
-import os
+import os, sys
 import numpy as np
 import flopy
-from xmf6 import nice_print
+
+# Agrega la carpeta que contiene el módulo osys
+mod_path = os.path.abspath(os.path.join(".."))
+if mod_path not in sys.path:
+    sys.path.append(mod_path)
+import osys
 
 def initialize(silent = False, **kwargs):
     par = set_par(kwargs["init"], get_sim_par, "\nsim configuration", silent)
@@ -258,7 +263,7 @@ def set_par(key_par, function, message, silent = False):
         par[k] = v  
 #    if not silent: print(f"---\n")
     if not silent:
-        xmf6.nice_print(par, message)
+        osys.nice_print(par, message)
     return par
 
 def get_sim_par():
@@ -438,3 +443,27 @@ def get_well_par():
                 pname=None, 
                 parent_file=None
                )
+
+if __name__ == '__main__':
+    init = {
+        'sim_name' : "flow",
+        'exe_name' : "C:\\Users\\luiggi\\Documents\\GitSites\\xmf6\\mf6\\windows\\mf6",
+    #    'exe_name' : "../../mf6/macosarm/mf6",
+        'sim_ws' : "sandbox4"
+    }
+    
+    time = {
+        'units': "DAYS",
+        'nper' : 1,
+        'perioddata': [(1.0, 1, 1.0)]
+    }
+    
+    ims = {}
+    
+    gwf = { 
+        'modelname': init["sim_name"],
+        'model_nam_file': f"{init["sim_name"]}.nam",
+        'save_flows': True
+    }
+
+    o_sim = initialize(init = init, time = time, ims = ims, silent = False)    
