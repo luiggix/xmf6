@@ -263,7 +263,7 @@ def set_par(key_par, function, message, silent = False):
         par[k] = v  
 #    if not silent: print(f"---\n")
     if not silent:
-        xmf6.nice_print(par, message)
+        xmf6.nice_print(key_par, message)
     return par
 
 def get_sim_par():
