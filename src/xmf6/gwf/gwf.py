@@ -7,10 +7,10 @@ import numpy as np
 import flopy
 
 # Agrega la carpeta que contiene el módulo osys
-mod_path = os.path.abspath(os.path.join(".."))
+mod_path = os.path.abspath(os.path.join("../.."))
 if mod_path not in sys.path:
     sys.path.append(mod_path)
-import osys
+import xmf6
 
 def initialize(silent = False, **kwargs):
     par = set_par(kwargs["init"], get_sim_par, "\nsim configuration", silent)
@@ -263,7 +263,7 @@ def set_par(key_par, function, message, silent = False):
         par[k] = v  
 #    if not silent: print(f"---\n")
     if not silent:
-        osys.nice_print(par, message)
+        xmf6.nice_print(par, message)
     return par
 
 def get_sim_par():
