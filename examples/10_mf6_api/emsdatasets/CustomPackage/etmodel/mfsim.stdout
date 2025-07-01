@@ -22,7 +22,7 @@ and distribution information.
  
  MODFLOW runs in SEQUENTIAL mode
  
- Run start date and time (yyyy/mm/dd hh:mm:ss): 2025/02/10 11:28:05
+ Run start date and time (yyyy/mm/dd hh:mm:ss): 2025/06/27  8:27:55
  
  Writing simulation list file: mfsim.lst
  Using Simulation name file: mfsim.nam
@@ -1028,7 +1028,7 @@ and distribution information.
     Solving:  Stress period:     1    Time step:   999
     Solving:  Stress period:     1    Time step:  1000
  
- Run end date and time (yyyy/mm/dd hh:mm:ss): 2025/02/10 11:28:06
- Elapsed run time:  0.948 Seconds
+ Run end date and time (yyyy/mm/dd hh:mm:ss): 2025/06/27  8:27:58
+ Elapsed run time:  3.214 Seconds
  
  Normal termination of simulation.

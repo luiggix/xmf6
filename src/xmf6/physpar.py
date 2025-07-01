@@ -53,7 +53,7 @@ class PhysPar():
     def hydraulic_conductivity(self):
         return self.__ppar['hydraulic conductivity']
 
-    @specific_discharge.setter
+    @hydraulic_conductivity.setter
     def hydraulic_conductivity(self, value):
         self.__ppar['hydraulic conductivity'] = value
 
@@ -61,7 +61,7 @@ class PhysPar():
     def source_concentration(self):
         return self.__ppar['source concentration']
 
-    @specific_discharge.setter
+    @source_concentration.setter
     def source_concentration(self, value):
         self.__ppar['source concentration'] = value
 
