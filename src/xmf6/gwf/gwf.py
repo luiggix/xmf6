@@ -78,10 +78,10 @@ def initialize(silent = False, **kwargs):
         parent_file=par["parent_file"]
     )
 
-    return o_sim
+    return o_sim, o_tdis, o_ims
 
 def build(o_sim, silent = False, **kwargs):
-
+    package_list = [] # Lista de paquetes agregados
     par = set_par(kwargs["gwf"], get_gwf_par, "\nnumerical model configuration", silent)
     o_gwf = flopy.mf6.ModflowGwf(
         simulation = o_sim, 
@@ -120,6 +120,7 @@ def build(o_sim, silent = False, **kwargs):
             pname=par["pname"], 
             parent_file=par["parent_file"]
         )
+        package_list.append(o_dis)
 
     if "ic" in kwargs:
         par = set_par(kwargs["ic"], get_ic_par, "\ninitial conditions configuration", silent)
@@ -132,6 +133,7 @@ def build(o_sim, silent = False, **kwargs):
             filename=par["filename"], 
             pname=par["pname"]
         )
+        package_list.append(o_ic)
 
     if "chd" in kwargs:
         par = set_par(kwargs["chd"], get_chd_par, "\nboundary conditions configuration", silent)
@@ -152,6 +154,7 @@ def build(o_sim, silent = False, **kwargs):
             pname=par["pname"], 
             parent_file=par["parent_file"]
         )
+        package_list.append(o_chd)
 
     if "npf" in kwargs:
         par = set_par(kwargs["npf"], get_npf_par, "\nflow properties configuration", silent)
@@ -181,6 +184,7 @@ def build(o_sim, silent = False, **kwargs):
             pname=par["pname"], 
             parent_file=par["parent_file"]
         )
+        package_list.append(o_npf)
 
     if "oc" in kwargs:
         par = set_par(kwargs["oc"], get_oc_par, "\noutput configuration", silent)
@@ -196,6 +200,7 @@ def build(o_sim, silent = False, **kwargs):
             filename=par["filename"], 
             pname=par["pname"]
         )
+        package_list.append(o_oc)
 
     if "well" in kwargs:
         par = set_par(kwargs["well"], get_well_par, "\nwells configuration", silent)
@@ -218,8 +223,9 @@ def build(o_sim, silent = False, **kwargs):
             pname=par["pname"], 
             parent_file=par["parent_file"]
         )
+        package_list.append(o_well)
 
-    return o_gwf
+    return o_gwf, package_list
 
 
 def get_head(o_sim, o_gwf):
@@ -466,4 +472,7 @@ if __name__ == '__main__':
         'save_flows': True
     }
 
-    o_sim = initialize(init = init, time = time, ims = ims, silent = False)    
+    o_sim, o_tdis, o_ims = initialize(init = init, time = time, ims = ims, silent = False)   
+
+    print(o_tdis)
+    print(o_ims)
