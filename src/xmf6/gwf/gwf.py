@@ -12,7 +12,7 @@ if mod_path not in sys.path:
     sys.path.append(mod_path)
 import xmf6
 
-def initialize(silent = False, **kwargs):
+def set_components(silent = False, **kwargs):
     par = set_par(kwargs["init"], get_sim_par, "\nsim configuration", silent)
     o_sim = flopy.mf6.MFSimulation(
         sim_name = par["sim_name"],
@@ -80,7 +80,7 @@ def initialize(silent = False, **kwargs):
 
     return o_sim, o_tdis, o_ims
 
-def build(o_sim, silent = False, **kwargs):
+def set_packages(o_sim, silent = False, **kwargs):
     package_list = [] # Lista de paquetes agregados
     par = set_par(kwargs["gwf"], get_gwf_par, "\nnumerical model configuration", silent)
     o_gwf = flopy.mf6.ModflowGwf(
@@ -472,7 +472,7 @@ if __name__ == '__main__':
         'save_flows': True
     }
 
-    o_sim, o_tdis, o_ims = initialize(init = init, time = time, ims = ims, silent = False)   
+    o_sim, o_tdis, o_ims = set_components(init = init, time = time, ims = ims, silent = False)   
 
     print(o_tdis)
     print(o_ims)
