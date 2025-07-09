@@ -12,8 +12,33 @@ if mod_path not in sys.path:
     sys.path.append(mod_path)
 import xmf6
 
-def set_components(silent = False, **kwargs):
-    par = set_par(kwargs["init"], get_sim_par, "\nsim configuration", silent)
+def init_sim(init, tdis, ims, silent = False):
+    """
+    Iniciliza la simulación con las componentes del tiempo y la solución numérica.
+    
+    Parameters:
+    -----------
+    init: dict
+        Diccionario de inicialización de la simulación.
+        
+    tdis: dict
+        Diccionario con los datos del tiempo.
+        
+    ims: dict
+        Diccionario con los datos para la solución numérica.
+
+    silent: bool
+        Cuando es True se imprime toda la información.
+        
+    Return:
+    -------
+    o_sim, o_tdis, o_ims: dict
+        Objetos de las componentes de la simulación 
+            - o_sim: flopy.mf6.modflow.mfsimulation.MFSimulation
+            - o_tdis: flopy.mf6.modflow.mftdis.ModflowTdis
+            - o_ims: flopy.mf6.modflow.mfims.ModflowIms
+    """
+    par = set_par(init, get_sim_par, "\nsim configuration", silent)
     o_sim = flopy.mf6.MFSimulation(
         sim_name = par["sim_name"],
         version  = par["version"],
@@ -26,7 +51,7 @@ def set_components(silent = False, **kwargs):
         write_headers = par["write_headers"]
     )
 
-    par = set_par(kwargs["time"], get_time_par, "\ntime configuration", silent)     
+    par = set_par(tdis, get_time_par, "\ntime configuration", silent)     
     o_tdis = flopy.mf6.ModflowTdis(
         simulation = o_sim,  
         loading_package = par["loading_package"], 
@@ -39,7 +64,7 @@ def set_components(silent = False, **kwargs):
         pname = par["pname"]
     )
 
-    par = set_par(kwargs["ims"], get_ims_par, "\nnumerical solution configuration", silent)
+    par = set_par(ims, get_ims_par, "\nnumerical solution configuration", silent)
     o_ims = flopy.mf6.ModflowIms(
         simulation = o_sim, 
         loading_package=par["loading_package"], 
@@ -81,6 +106,27 @@ def set_components(silent = False, **kwargs):
     return o_sim, o_tdis, o_ims
 
 def set_packages(o_sim, silent = False, **kwargs):
+    """
+    Construye el objeto para el modelo de flujo agregándole los paquetes
+    definidos por el usuario.
+    
+    Parameters:
+    -----------
+    o_sim: dict
+        Diccionario de inicialización de la simulación.
+        
+    kwargs: dict
+        Diccionario que contiene a su vez los diccionarios con los datos
+        para inicializar y agregar cada paquete definido por el usuario.
+
+    silent: bool
+        Cuando es True se imprime toda la información.
+        
+    Return:
+    -------
+    o_gwf, packages: flopy.mf6.modflow.mfgwf.ModflowGwf, dict
+        Objeto del modelo de flujo y diccionario con los paquetes agregados al modelo.
+    """
     packages = {} # Diccionario de paquetes agregados
     par = set_par(kwargs["gwf"], get_gwf_par, "\nnumerical model configuration", silent)
     o_gwf = flopy.mf6.ModflowGwf(
@@ -228,16 +274,44 @@ def set_packages(o_sim, silent = False, **kwargs):
 
 
 def get_head(o_gwf):
+    """
+    Obtiene el vector de carga hidráulica.
+    El archivo de donde se almacena la carga hidráulica debe
+    tener extension ".hds"
+
+    Parameters:
+    -----------
+    o_gwf: flopy.mf6.modflow.mfgwf.ModflowGwf
+        Objeto de la simulación de flujo.
+
+    Return:
+    -------
+    Vector de carga hidráulica.
+    """
     headfile = os.path.join(o_gwf.model_ws, f"{o_gwf.name}.hds")
     hds = flopy.utils.HeadFile(headfile)
     return hds.get_data()
 
 def get_specific_discharge(o_gwf):
+    """
+    Obtiene el vector de descarga específica.
+    El archivo de donde se almacena el budget debe
+    tener extension ".bud"
+
+    Parameters:
+    -----------
+    o_gwf: flopy.mf6.modflow.mfgwf.ModflowGwf
+        Objeto de la simulación de flujo.
+
+    Return:
+    -------
+    Vectores: qx, qy, qz y n_q que es la norma del vector de flujo.
+    """
     budfile = os.path.join(o_gwf.model_ws, f"{o_gwf.name}.bud")
     bud  = flopy.utils.CellBudgetFile(budfile)
     spdis = bud.get_data(text="DATA-SPDIS")[0]
     qx, qy, qz = flopy.utils.postprocessing.get_specific_discharge(spdis, o_gwf)
-    n_q = np.sqrt(np.square(qx[0]) + np.square(qy[0]))
+    n_q = np.sqrt(np.square(qx[0]) + np.square(qy[0]) + np.square(qz[0]))
     return qx, qy, qz, n_q
     
 def set_par(key_par, function, message, silent = False):
@@ -261,12 +335,10 @@ def set_par(key_par, function, message, silent = False):
     par: dict
         Diccionario con los parámetros para la clave solicitada.
     """
-#    if not silent: print(f"\n{message}:")
     par = function()
     for k, v in key_par.items():
-#        if not silent: print(f"  {k} = {v}")
         par[k] = v  
-#    if not silent: print(f"---\n")
+
     if not silent:
         xmf6.nice_print(key_par, message)
     return par
