@@ -81,7 +81,7 @@ def set_components(silent = False, **kwargs):
     return o_sim, o_tdis, o_ims
 
 def set_packages(o_sim, silent = False, **kwargs):
-    package_list = [] # Lista de paquetes agregados
+    packages = {} # Diccionario de paquetes agregados
     par = set_par(kwargs["gwf"], get_gwf_par, "\nnumerical model configuration", silent)
     o_gwf = flopy.mf6.ModflowGwf(
         simulation = o_sim, 
@@ -95,7 +95,6 @@ def set_packages(o_sim, silent = False, **kwargs):
         print_flows=par["print_flows"], 
         save_flows=par["save_flows"], 
         newtonoptions=par["newtonoptions"], 
-#        packages=par["packages"]
     )
     
     if "dis" in kwargs:
@@ -120,7 +119,7 @@ def set_packages(o_sim, silent = False, **kwargs):
             pname=par["pname"], 
             parent_file=par["parent_file"]
         )
-        package_list.append(o_dis)
+        packages["dis"] = o_dis
 
     if "ic" in kwargs:
         par = set_par(kwargs["ic"], get_ic_par, "\ninitial conditions configuration", silent)
@@ -133,7 +132,7 @@ def set_packages(o_sim, silent = False, **kwargs):
             filename=par["filename"], 
             pname=par["pname"]
         )
-        package_list.append(o_ic)
+        packages["ic"] = o_ic
 
     if "chd" in kwargs:
         par = set_par(kwargs["chd"], get_chd_par, "\nboundary conditions configuration", silent)
@@ -154,7 +153,7 @@ def set_packages(o_sim, silent = False, **kwargs):
             pname=par["pname"], 
             parent_file=par["parent_file"]
         )
-        package_list.append(o_chd)
+        packages["chd"] = o_chd
 
     if "npf" in kwargs:
         par = set_par(kwargs["npf"], get_npf_par, "\nflow properties configuration", silent)
@@ -184,7 +183,7 @@ def set_packages(o_sim, silent = False, **kwargs):
             pname=par["pname"], 
             parent_file=par["parent_file"]
         )
-        package_list.append(o_npf)
+        packages["npf"] = o_npf
 
     if "oc" in kwargs:
         par = set_par(kwargs["oc"], get_oc_par, "\noutput configuration", silent)
@@ -200,7 +199,7 @@ def set_packages(o_sim, silent = False, **kwargs):
             filename=par["filename"], 
             pname=par["pname"]
         )
-        package_list.append(o_oc)
+        packages["oc"] = o_oc
 
     if "well" in kwargs:
         par = set_par(kwargs["well"], get_well_par, "\nwells configuration", silent)
@@ -223,18 +222,18 @@ def set_packages(o_sim, silent = False, **kwargs):
             pname=par["pname"], 
             parent_file=par["parent_file"]
         )
-        package_list.append(o_well)
+        packages["well"] = o_well
 
-    return o_gwf, package_list
+    return o_gwf, packages
 
 
-def get_head(o_sim, o_gwf):
-    headfile = os.path.join(f"{o_sim.sim_path}", f"{o_gwf.name}.hds")
+def get_head(o_gwf):
+    headfile = os.path.join(o_gwf.model_ws, f"{o_gwf.name}.hds")
     hds = flopy.utils.HeadFile(headfile)
     return hds.get_data()
 
-def get_specific_discharge(o_sim, o_gwf):
-    budfile = os.path.join(f"{o_sim.sim_path}", f"{o_gwf.name}.bud")
+def get_specific_discharge(o_gwf):
+    budfile = os.path.join(o_gwf.model_ws, f"{o_gwf.name}.bud")
     bud  = flopy.utils.CellBudgetFile(budfile)
     spdis = bud.get_data(text="DATA-SPDIS")[0]
     qx, qy, qz = flopy.utils.postprocessing.get_specific_discharge(spdis, o_gwf)
