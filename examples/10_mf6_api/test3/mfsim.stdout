@@ -1,0 +1,72 @@
+                                   MODFLOW 6
+                U.S. GEOLOGICAL SURVEY MODULAR HYDROLOGIC MODEL
+                            VERSION 6.6.1 02/10/2025
+
+   MODFLOW 6 compiled Feb 10 2025 17:37:25 with Intel(R) Fortran Intel(R) 64
+   Compiler Classic for applications running on Intel(R) 64, Version 2021.7.0
+                             Build 20220726_000000
+
+This software has been approved for release by the U.S. Geological 
+Survey (USGS). Although the software has been subjected to rigorous 
+review, the USGS reserves the right to update the software as needed 
+pursuant to further analysis and review. No warranty, expressed or 
+implied, is made by the USGS or the U.S. Government as to the 
+functionality of the software and related material nor shall the 
+fact of release constitute any such warranty. Furthermore, the 
+software is released on condition that neither the USGS nor the U.S. 
+Government shall be held liable for any damages resulting from its 
+authorized or unauthorized use. Also refer to the USGS Water 
+Resources Software User Rights Notice for complete use, copyright, 
+and distribution information.
+
+ 
+ MODFLOW runs in SEQUENTIAL mode
+ 
+ Run start date and time (yyyy/mm/dd hh:mm:ss): 2025/07/12  8:40:45
+ 
+ Writing simulation list file: mfsim.lst
+ Using Simulation name file: mfsim.nam
+ 
+
+ERROR REPORT:
+
+   1. CELL (2,1,1) THICKNESS <= 0. TOP, BOT:     0.00000000000000
+      0.00000000000000
+   2. CELL (2,1,2) THICKNESS <= 0. TOP, BOT:     0.00000000000000
+      0.00000000000000
+   3. CELL (2,1,3) THICKNESS <= 0. TOP, BOT:     0.00000000000000
+      0.00000000000000
+   4. CELL (2,2,1) THICKNESS <= 0. TOP, BOT:     0.00000000000000
+      0.00000000000000
+   5. CELL (2,2,2) THICKNESS <= 0. TOP, BOT:     0.00000000000000
+      0.00000000000000
+   6. CELL (2,2,3) THICKNESS <= 0. TOP, BOT:     0.00000000000000
+      0.00000000000000
+   7. CELL (2,3,1) THICKNESS <= 0. TOP, BOT:     0.00000000000000
+      0.00000000000000
+   8. CELL (2,3,2) THICKNESS <= 0. TOP, BOT:     0.00000000000000
+      0.00000000000000
+   9. CELL (2,3,3) THICKNESS <= 0. TOP, BOT:     0.00000000000000
+      0.00000000000000
+  10. CELL (3,1,1) THICKNESS <= 0. TOP, BOT:     0.00000000000000
+      0.00000000000000
+  11. CELL (3,1,2) THICKNESS <= 0. TOP, BOT:     0.00000000000000
+      0.00000000000000
+  12. CELL (3,1,3) THICKNESS <= 0. TOP, BOT:     0.00000000000000
+      0.00000000000000
+  13. CELL (3,2,1) THICKNESS <= 0. TOP, BOT:     0.00000000000000
+      0.00000000000000
+  14. CELL (3,2,2) THICKNESS <= 0. TOP, BOT:     0.00000000000000
+      0.00000000000000
+  15. CELL (3,2,3) THICKNESS <= 0. TOP, BOT:     0.00000000000000
+      0.00000000000000
+  16. CELL (3,3,1) THICKNESS <= 0. TOP, BOT:     0.00000000000000
+      0.00000000000000
+  17. CELL (3,3,2) THICKNESS <= 0. TOP, BOT:     0.00000000000000
+      0.00000000000000
+  18. CELL (3,3,3) THICKNESS <= 0. TOP, BOT:     0.00000000000000
+      0.00000000000000
+
+UNIT ERROR REPORT:
+
+  1. ERROR OCCURRED WHILE READING FILE 'flow.dis'

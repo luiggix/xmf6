@@ -103,7 +103,7 @@ def init_sim(init, tdis, ims, silent = False):
         parent_file=par["parent_file"]
     )
 
-    return o_sim, o_tdis, o_ims
+    return o_sim
 
 def set_packages(o_sim, silent = False, **kwargs):
     """
@@ -529,21 +529,69 @@ if __name__ == '__main__':
         'sim_ws' : "sandbox4"
     }
     
-    time = {
+    tdis = {
         'units': "DAYS",
         'nper' : 1,
         'perioddata': [(1.0, 1, 1.0)]
     }
     
     ims = {}
-    
+
+    o_sim = init_sim(init = init, tdis = tdis, ims = ims, silent = False)   
+    print(o_sim.ims)
+    print(o_sim.tdis)
+
     gwf = { 
         'modelname': init["sim_name"],
         'model_nam_file': f"{init["sim_name"]}.nam",
         'save_flows': True
     }
+    
+    dis = {
+    'length_units': "meters",
+    'nlay': 3, 
+    'nrow': 3, 
+    'ncol': 3,
+    'delr': 1.0, 
+    'delc': 1.0, 
+    'top' : 1.0, 
+    'botm': 0.0 
+    }
 
-    o_sim, o_tdis, o_ims = set_components(init = init, time = time, ims = ims, silent = False)   
+    ic = {
+        'strt': 1.0
+    }
 
-    print(o_tdis)
-    print(o_ims)
+    # Parámetros para las condiciones de frontera (flopy.mf6.ModflowGwfchd)
+    chd_data = []
+    for row in range(dis['nrow']):
+        chd_data.append([(0, row, 0), 10.0])       # Condición en la pared izquierda
+        chd_data.append([(0, row, dis['ncol'] - 1), 5.0]) # Condición en la pared derecha
+    
+    chd = {
+        'stress_period_data': chd_data,     
+    }
+
+    # Parámetros para las propiedades de flujo (flopy.mf6.ModflowGwfnpf)
+    npf = {
+        'save_specific_discharge': True,
+        'save_saturation' : True,
+        'icelltype' : 0,
+        'k' : 0.01,
+    }
+
+    # Parámetros para almacenar y mostrar la salida de la simulación (flopy.mf6.ModflowGwfoc)
+    oc = {
+        'budget_filerecord': f"{init['sim_name']}.bud",
+        'head_filerecord': f"{init['sim_name']}.hds",
+        'saverecord': [("HEAD", "ALL"), ("BUDGET", "ALL")],
+        'printrecord': [("HEAD", "ALL")]
+    }
+
+    # Configuración de los paquetes para el modelo de flujo
+    o_gwf, package_list = xmf6.gwf.set_packages(o_sim, silent = True,
+                                            gwf = gwf, dis = dis, ic = ic, chd = chd, npf = npf, oc = oc)
+
+    print(o_gwf)
+    print(o_gwf.get_package_list())
+    print(package_list.keys())
