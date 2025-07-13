@@ -51,9 +51,9 @@ init = {
 
 # Parámetros para el tiempo (flopy.mf6.ModflowTdis)
 tdis = {
-    'units': "DAYS",
+    'units': "seconds",
     'nper' : 1,
-    'perioddata': [(1.0, 1, 1.0)]
+    'perioddata': [(8.640e04, 1, 1.0)]
 }
 
 # Parámetros para la solución numérica (flopy.mf6.ModflowIms)
@@ -70,33 +70,20 @@ gwf = {
 lx = 25
 ly = 25
 lz = 10
-nrow = int(input("nrow = "))
-ncol = int(input("ncol = "))
-nlay = int(input("nlay = "))
-
-print(nrow, ncol, nlay)
-if nrow > 10 or nrow < 0 or ncol > 10 or ncol < 0 or nlay > 10 or nlay < 0:
-    print("Este ejemplo está limitado a:")
-    print(" 0 < nrow =< 10")
-    print(" 0 < ncol =< 10")
-    print(" 0 < nlay =< 10")
-    sys.exit()
-delr = lx / ncol
-delc = ly / nrow
-delz = lz / nlay
-print(delr, delc, delz)
+nrow = 15
+ncol = 15
+nlay = 5
 
 # Parámetros para la discretización espacial (flopy.mf6.ModflowGwfdis)
 dis = {
-    'length_units': "meters",
-    'nlay': nlay, 
-    'nrow': nrow, 
-    'ncol': ncol,
-    'delr': delr, 
-    'delc': delc,
-    'delz': delz,
-    'top' : 1.0, 
-    'botm': 0.0 
+    'length_units': "feet",
+    'nlay': 5, 
+    'nrow': 15, 
+    'ncol': 15,
+    'delr': 5000., 
+    'delc': 5000.,
+    'top' : 200.0, 
+    'botm': [-150.0, -200.0, -300.0, -350.0, -450.0] 
 }
 
 # Parámetros para las condiciones iniciales (flopy.mf6.ModflowGwfic)
@@ -108,7 +95,7 @@ ic = {
 chd_data = []
 for lay in range(dis['nlay']):
     for row in range(dis['nrow']):
-        chd_data.append([(lay, row, 0), 10.0])       # Condición en la pared izquierda
+        chd_data.append([(lay, row, 0), 10.0 - lay])       # Condición en la pared izquierda
         chd_data.append([(lay, row, dis['ncol'] - 1), 5.0]) # Condición en la pared derecha
 
 chd = {
@@ -120,7 +107,8 @@ npf = {
     'save_specific_discharge': True,
     'save_saturation' : True,
     'icelltype' : 0,
-    'k' : 0.01,
+    'k' : [1.0e-3, 1.0e-8, 1.0e-4, 5.0e-7, 2.0e-4],
+    'k33': [1.0e-3, 1.0e-8, 1.0e-4, 5.0e-7, 2.0e-4]
 }
 
 # Parámetros para almacenar y mostrar la salida de la simulación (flopy.mf6.ModflowGwfoc)
@@ -132,7 +120,7 @@ oc = {
 }
 
 # Inicialización de la simulación
-o_sim, o_tdis, o_ims = xmf6.gwf.init_sim(init = init, tdis = tdis, ims = ims, silent = True)
+o_sim = xmf6.gwf.init_sim(init = init, tdis = tdis, ims = ims, silent = True)
 
 # Configuración de los paquetes para el modelo de flujo
 o_gwf, package_list = xmf6.gwf.set_packages(o_sim, silent = True,
@@ -162,11 +150,9 @@ mf6 = ModflowApi(mf6_lib_path, working_directory=o_sim.sim_path)
 
 # Inicialización del modelo
 mf6.initialize(mf6_config_file)
-print("X")
 
 # Para la solución obtenida con np.linalg.solve()
 SOL = np.zeros(dis['nrow'] * dis['ncol'] * dis['nlay'])
-print(SOL)
 
 # Obtenemos el tiempo actual y el tiempo final de la simulación
 current_time = mf6.get_current_time()
@@ -233,6 +219,9 @@ while current_time < end_time:
 # Almacenamos la solución obtenida por MF6 (ojo: necesitamos hacer una copia del arreglo)
 SOL_MF6 = np.copy(mf6.get_value_ptr(mf6.get_var_address("X", 'FLOW')))
 
+xz_plane = SOL.reshape((dis['nlay'], dis['nrow'], dis['ncol']))[:,3,:]
+xz_plane_mf6 = SOL_MF6.reshape((dis['nlay'], dis['nrow'], dis['ncol']))[:,3,:]
+
 # Finalizamos la simulación completa
 try:
     mf6.finalize()
@@ -246,8 +235,73 @@ print(linea)
 print("Finalizando la simulación")
 print(linea)
 
+ERMS = np.linalg.norm(SOL-SOL_MF6) / np.sqrt(len(SOL))
+
+ilay = int(input("Layer = "))
+if ilay < 1:
+    ilay = 0
+elif ilay > 5:
+    ilay = 4
+else:
+    ilay -= 1
+
 # --- Recuperamos los resultados de la simulación ---
 head = xmf6.gwf.get_head(o_gwf)
-print(head, head.shape)
+
+# --- Parámetros para las gráficas ---
+grid = o_gwf.modelgrid
+x, y, z = grid.xyzcellcenters
+hvmin = np.nanmin(head)
+hvmax = np.nanmax(head)
+xticks = x[0]
+yticks = np.linspace(hvmin, hvmax, 3)
+zticks = z[:,0,0]
+xlabels = [f'{x:1.1f}' for x in x[0]]
+ylabels = [f'{y:1.1f}' for y in yticks]
+zlabels = [f'{z:1.1f}' for z in zticks]
+
+# --- Definición de la figura ---
+fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, figsize =(8,8))
+
+# --- Gráfica 1. ---
+hview = flopy.plot.PlotMapView(model = o_gwf, ax = ax1)
+hview.plot_grid(linewidths = 0.5, alpha = 0.5)
+h_ac = hview.plot_array(SOL_MF6.reshape((dis['nlay'], dis['nrow'], dis['ncol']))[ilay], cmap = "YlGnBu", vmin = hvmin, vmax = hvmax, alpha = 0.75)
+h_cb = plt.colorbar(h_ac, ax = ax1, label = "$h$ (m)", cax = xmf6.vis.cax(ax1, h_ac))
+h_cb.ax.tick_params(labelsize=6)
+ax1.set_title("$h$ (Mf6)", fontsize=10)
+ax1.set_ylabel("$y$ (m)", fontsize = 8)
+ax1.set_xlabel("$x$ (m)", fontsize = 8)
+ax1.set_aspect('equal')
+
+# --- Gráfica 2. ---
+sview = flopy.plot.PlotMapView(model = o_gwf, ax = ax2)
+sview.plot_grid(linewidths = 0.5, alpha = 0.5)
+s_ac = sview.plot_array(SOL.reshape((dis['nlay'], dis['nrow'], dis['ncol']))[ilay], cmap = "YlGnBu", vmin = hvmin, vmax = hvmax, alpha = 0.75)
+s_cb = plt.colorbar(s_ac, ax = ax2, label = "$h$ (m)", cax = xmf6.vis.cax(ax2, s_ac))
+s_cb.ax.tick_params(labelsize=6)
+ax2.set_title("$h$ (np.linalg.solve) ", fontsize=10)
+ax2.set_xlabel("$x$ (m)", fontsize = 8)
+ax2.set_aspect('equal')
+
+# --- Gráfica 3. ---
+ax3.imshow(xz_plane_mf6, cmap = "YlGnBu")
+ax3.set_ylabel("$z$ (m)", fontsize = 8)
+ax3.set_xlabel("$x$ (m)", fontsize = 8)
+ax3.set_aspect('equal')
+ax3.set_xticks(ticks = [])
+ax3.set_yticks(ticks = [])
+
+# --- Gráfica 4. ---
+ax4.imshow(xz_plane, cmap = "YlGnBu")
+ax4.set_ylabel("$z$ (m)", fontsize = 8)
+ax4.set_xlabel("$x$ (m)", fontsize = 8)
+ax4.set_aspect('equal')
+ax4.set_xticks(ticks = [])
+ax4.set_yticks(ticks = [])
+
+plt.suptitle(f"Layer : {ilay+1} (RMS = {ERMS:6.5f})")
+plt.tight_layout()
+plt.show()
 
 

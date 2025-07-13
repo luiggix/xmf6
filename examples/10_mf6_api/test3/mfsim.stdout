@@ -22,51 +22,14 @@ and distribution information.
  
  MODFLOW runs in SEQUENTIAL mode
  
- Run start date and time (yyyy/mm/dd hh:mm:ss): 2025/07/12  8:40:45
+ Run start date and time (yyyy/mm/dd hh:mm:ss): 2025/07/12 18:02:36
  
  Writing simulation list file: mfsim.lst
  Using Simulation name file: mfsim.nam
  
-
-ERROR REPORT:
-
-   1. CELL (2,1,1) THICKNESS <= 0. TOP, BOT:     0.00000000000000
-      0.00000000000000
-   2. CELL (2,1,2) THICKNESS <= 0. TOP, BOT:     0.00000000000000
-      0.00000000000000
-   3. CELL (2,1,3) THICKNESS <= 0. TOP, BOT:     0.00000000000000
-      0.00000000000000
-   4. CELL (2,2,1) THICKNESS <= 0. TOP, BOT:     0.00000000000000
-      0.00000000000000
-   5. CELL (2,2,2) THICKNESS <= 0. TOP, BOT:     0.00000000000000
-      0.00000000000000
-   6. CELL (2,2,3) THICKNESS <= 0. TOP, BOT:     0.00000000000000
-      0.00000000000000
-   7. CELL (2,3,1) THICKNESS <= 0. TOP, BOT:     0.00000000000000
-      0.00000000000000
-   8. CELL (2,3,2) THICKNESS <= 0. TOP, BOT:     0.00000000000000
-      0.00000000000000
-   9. CELL (2,3,3) THICKNESS <= 0. TOP, BOT:     0.00000000000000
-      0.00000000000000
-  10. CELL (3,1,1) THICKNESS <= 0. TOP, BOT:     0.00000000000000
-      0.00000000000000
-  11. CELL (3,1,2) THICKNESS <= 0. TOP, BOT:     0.00000000000000
-      0.00000000000000
-  12. CELL (3,1,3) THICKNESS <= 0. TOP, BOT:     0.00000000000000
-      0.00000000000000
-  13. CELL (3,2,1) THICKNESS <= 0. TOP, BOT:     0.00000000000000
-      0.00000000000000
-  14. CELL (3,2,2) THICKNESS <= 0. TOP, BOT:     0.00000000000000
-      0.00000000000000
-  15. CELL (3,2,3) THICKNESS <= 0. TOP, BOT:     0.00000000000000
-      0.00000000000000
-  16. CELL (3,3,1) THICKNESS <= 0. TOP, BOT:     0.00000000000000
-      0.00000000000000
-  17. CELL (3,3,2) THICKNESS <= 0. TOP, BOT:     0.00000000000000
-      0.00000000000000
-  18. CELL (3,3,3) THICKNESS <= 0. TOP, BOT:     0.00000000000000
-      0.00000000000000
-
-UNIT ERROR REPORT:
-
-  1. ERROR OCCURRED WHILE READING FILE 'flow.dis'
+    Solving:  Stress period:     1    Time step:     1
+ 
+ Run end date and time (yyyy/mm/dd hh:mm:ss): 2025/07/12 18:02:36
+ Elapsed run time:  0.194 Seconds
+ 
+ Normal termination of simulation.
