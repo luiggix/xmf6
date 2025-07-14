@@ -46,7 +46,7 @@ init = {
     'sim_name' : "flow",
     'exe_name' : "C:\\Users\\luiggi\\Documents\\GitSites\\xmf6\\mf6\\windows\\mf6",
 #    'exe_name' : "../../mf6/macosarm/mf6",
-    'sim_ws' : "test2"
+    'sim_ws' : "sandbox2"
 }
 
 # Parámetros para el tiempo (flopy.mf6.ModflowTdis)
