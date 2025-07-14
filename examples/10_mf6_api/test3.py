@@ -29,13 +29,13 @@ def build_mat(mf6):
     idx = 0
     i = 0
     istart = IA[0] # Inicio del renglón en IA
-    for iend in IA[1:]: # Recorremos desde el inicio de cada renglón
+    for iend in IA[1:]: # Iteramos por cada renglón
         for j in range(istart, iend): # Recorremos todos los elementos del renglón
             Atest[idx, JA[j-1]-1] = A[i] # Agregamos el coeficiente en la matriz completa
             i += 1
         istart = iend
         idx += 1
-    return Atest, A, IA, JA # Regresamos la matriz densa y en el format CRS
+    return Atest, A, IA, JA # Regresamos la matriz densa y en el formato CRS
 
 # --- Preparación de la simulación ---
 
@@ -185,16 +185,6 @@ while current_time < end_time:
         # Construye el sistema del problema y lo resuelve
         has_converged = mf6.solve(1)
         
-        # En este momento podemos construir la matriz del sistema
-        A, _, _, _ = build_mat(mf6)
-        RHS = mf6.get_value(mf6.get_var_address("RHS", 'SLN_1'))
-        print("A:\n", A)
-        print("RHS:", RHS)
-
-        # Calculamos la solución con np.linalg.solve() para comparar
-        SOL = np.linalg.solve(A, RHS)
-        print("SOL:", SOL)
-        
         if has_converged:
             print(f" ---> ¿Convergencia obtenida? : {has_converged}")
             break
@@ -203,6 +193,16 @@ while current_time < end_time:
             
         kiter += 1
 
+    # En este momento podemos construir la matriz del sistema
+    A, _, _, _ = build_mat(mf6)
+    RHS = mf6.get_value(mf6.get_var_address("RHS", 'SLN_1'))
+    print("A:\n", A)
+    print("RHS:", RHS)
+
+    # Calculamos la solución con np.linalg.solve() para comparar
+    SOL = np.linalg.solve(A, RHS)
+    print("SOL:", SOL)
+        
     # Finalizamos la solución del paso de tiempo actual
     mf6.finalize_solve()
 
@@ -219,9 +219,6 @@ while current_time < end_time:
 # Almacenamos la solución obtenida por MF6 (ojo: necesitamos hacer una copia del arreglo)
 SOL_MF6 = np.copy(mf6.get_value_ptr(mf6.get_var_address("X", 'FLOW')))
 
-xz_plane = SOL.reshape((dis['nlay'], dis['nrow'], dis['ncol']))[:,3,:]
-xz_plane_mf6 = SOL_MF6.reshape((dis['nlay'], dis['nrow'], dis['ncol']))[:,3,:]
-
 # Finalizamos la simulación completa
 try:
     mf6.finalize()
@@ -230,14 +227,16 @@ except:
     raise RuntimeError
 
 print(linea)
-print("SOl (MF6):", SOL_MF6)
+print(f"SOl (MF6):{SOL_MF6.shape}", SOL_MF6)
 print(linea)
 print("Finalizando la simulación")
 print(linea)
 
+# Calculamos el RMS entre la solución np.linalg.solve y MF6.
 ERMS = np.linalg.norm(SOL-SOL_MF6) / np.sqrt(len(SOL))
 
-ilay = int(input("Layer = "))
+# Preguntamos qué capa se quiere visualizar
+ilay = int(input("Visualizar la capa (0-5) : "))
 if ilay < 1:
     ilay = 0
 elif ilay > 5:
@@ -245,33 +244,31 @@ elif ilay > 5:
 else:
     ilay -= 1
 
-# --- Recuperamos los resultados de la simulación ---
-head = xmf6.gwf.get_head(o_gwf)
-
 # --- Parámetros para las gráficas ---
 grid = o_gwf.modelgrid
 x, y, z = grid.xyzcellcenters
-hvmin = np.nanmin(head)
-hvmax = np.nanmax(head)
+hvmin = np.nanmin(SOL_MF6)
+hvmax = np.nanmax(SOL_MF6)
 xticks = x[0]
-yticks = np.linspace(hvmin, hvmax, 3)
+yticks = y[:,0]
 zticks = z[:,0,0]
-xlabels = [f'{x:1.1f}' for x in x[0]]
+xlabels = [f'{x:1.1f}' for x in xticks]
 ylabels = [f'{y:1.1f}' for y in yticks]
 zlabels = [f'{z:1.1f}' for z in zticks]
 
 # --- Definición de la figura ---
-fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, figsize =(8,8))
+fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, height_ratios=[4,1])
 
 # --- Gráfica 1. ---
 hview = flopy.plot.PlotMapView(model = o_gwf, ax = ax1)
 hview.plot_grid(linewidths = 0.5, alpha = 0.5)
 h_ac = hview.plot_array(SOL_MF6.reshape((dis['nlay'], dis['nrow'], dis['ncol']))[ilay], cmap = "YlGnBu", vmin = hvmin, vmax = hvmax, alpha = 0.75)
-h_cb = plt.colorbar(h_ac, ax = ax1, label = "$h$ (m)", cax = xmf6.vis.cax(ax1, h_ac))
+h_cb = plt.colorbar(h_ac, ax = ax1, label = "", cax = xmf6.vis.cax(ax1, h_ac))
 h_cb.ax.tick_params(labelsize=6)
 ax1.set_title("$h$ (Mf6)", fontsize=10)
 ax1.set_ylabel("$y$ (m)", fontsize = 8)
-ax1.set_xlabel("$x$ (m)", fontsize = 8)
+ax1.set_xticks(ticks = [], labels = [], fontsize=6, rotation=90)
+ax1.set_yticks(ticks = yticks, labels = yticks, fontsize=6)
 ax1.set_aspect('equal')
 
 # --- Gráfica 2. ---
@@ -281,26 +278,34 @@ s_ac = sview.plot_array(SOL.reshape((dis['nlay'], dis['nrow'], dis['ncol']))[ila
 s_cb = plt.colorbar(s_ac, ax = ax2, label = "$h$ (m)", cax = xmf6.vis.cax(ax2, s_ac))
 s_cb.ax.tick_params(labelsize=6)
 ax2.set_title("$h$ (np.linalg.solve) ", fontsize=10)
-ax2.set_xlabel("$x$ (m)", fontsize = 8)
+ax2.set_xticks(ticks = [], labels = [], fontsize=6, rotation=90)
+ax2.set_yticks(ticks = [], labels = [], fontsize=6)
 ax2.set_aspect('equal')
 
 # --- Gráfica 3. ---
-ax3.imshow(xz_plane_mf6, cmap = "YlGnBu")
+xz6 = flopy.plot.PlotCrossSection(model=o_gwf, ax = ax3, line={"row": 3})
+xz6.plot_grid(linewidths = 0.5, alpha = 0.5)
+xz6_ac = xz6.plot_array(SOL_MF6, cmap = "YlGnBu", vmin = hvmin, vmax = hvmax, alpha = 0.75)
+xz6_cb = plt.colorbar(xz6_ac, ax = ax3, label = " ", cax = xmf6.vis.cax(ax3, xz6_ac))
+xz6_cb.ax.tick_params(labelsize=6)
 ax3.set_ylabel("$z$ (m)", fontsize = 8)
 ax3.set_xlabel("$x$ (m)", fontsize = 8)
-ax3.set_aspect('equal')
-ax3.set_xticks(ticks = [])
-ax3.set_yticks(ticks = [])
+ax3.set_xticks(ticks = xticks, labels = xticks, fontsize=6, rotation=90)
+ax3.set_yticks(ticks = zticks, labels = zticks, fontsize=6)
+ax3.set_aspect('auto')
 
 # --- Gráfica 4. ---
-ax4.imshow(xz_plane, cmap = "YlGnBu")
-ax4.set_ylabel("$z$ (m)", fontsize = 8)
+xz = flopy.plot.PlotCrossSection(model=o_gwf, ax = ax4, line={"row": 3})
+xz.plot_grid(linewidths = 0.5, alpha = 0.5)
+xz_ac = xz.plot_array(SOL, cmap = "YlGnBu", vmin = hvmin, vmax = hvmax, alpha = 0.75)
+xz_cb = plt.colorbar(xz_ac, ax = ax4, label = "$h$ (m)", cax = xmf6.vis.cax(ax4, xz_ac))
+xz_cb.ax.tick_params(labelsize=6)
 ax4.set_xlabel("$x$ (m)", fontsize = 8)
-ax4.set_aspect('equal')
-ax4.set_xticks(ticks = [])
-ax4.set_yticks(ticks = [])
+ax4.set_xticks(ticks = xticks, labels = xticks, fontsize=6, rotation=90)
+ax4.set_yticks(ticks = zticks, labels = [], fontsize=6)
+ax4.set_aspect('auto')
 
-plt.suptitle(f"Layer : {ilay+1} (RMS = {ERMS:6.5f})")
+plt.suptitle(f"Capa : {ilay+1} (RMS = {ERMS:6.5f})")
 plt.tight_layout()
 plt.show()
 

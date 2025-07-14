@@ -188,15 +188,7 @@ while current_time < end_time:
         # Construye el sistema del problema y lo resuelve
         has_converged = mf6.solve(1)
         
-        # En este momento podemos construir la matriz del sistema
-        A, _, _, _ = build_mat(mf6)
-        RHS = mf6.get_value(mf6.get_var_address("RHS", 'SLN_1'))
-        print("A:\n", A)
-        print("RHS:", RHS)
 
-        # Calculamos la solución con np.linalg.solve() para comparar
-        SOL = np.linalg.solve(A, RHS)
-        print("SOL:", SOL)
         
         if has_converged:
             print(f" ---> ¿Convergencia obtenida? : {has_converged}")
@@ -206,6 +198,16 @@ while current_time < end_time:
             
         kiter += 1
 
+    # En este momento podemos construir la matriz del sistema
+    A, _, _, _ = build_mat(mf6)
+    RHS = mf6.get_value(mf6.get_var_address("RHS", 'SLN_1'))
+    print("A:\n", A)
+    print("RHS:", RHS)
+
+    # Calculamos la solución con np.linalg.solve() para comparar
+    SOL = np.linalg.solve(A, RHS)
+    print("SOL:", SOL)
+        
     # Finalizamos la solución del paso de tiempo actual
     mf6.finalize_solve()
 
@@ -235,6 +237,9 @@ print(linea)
 print("Finalizando la simulación")
 print(linea)
 
+# Calculamos el RMS entre la solución np.linalg.solve y MF6.
+ERMS = np.linalg.norm(SOL-SOL_MF6) / np.sqrt(len(SOL))
+
 # --- Recuperamos los resultados de la simulación ---
 head = xmf6.gwf.get_head(o_gwf)
 
@@ -244,8 +249,8 @@ x, y, z = grid.xyzcellcenters
 hvmin = np.nanmin(head)
 hvmax = np.nanmax(head)
 xticks = x[0]
-yticks = np.linspace(hvmin, hvmax, 3)
-xlabels = [f'{x:1.1f}' for x in x[0]]
+yticks = y[:,0]
+xlabels = [f'{x:1.1f}' for x in xticks]
 ylabels = [f'{y:1.1f}' for y in yticks]
 
 # --- Definición de la figura ---
@@ -255,11 +260,13 @@ fig, (ax1, ax2) = plt.subplots(1, 2, figsize =(8,4))
 hview = flopy.plot.PlotMapView(model = o_gwf, ax = ax1)
 hview.plot_grid(linewidths = 0.5, alpha = 0.5)
 h_ac = hview.plot_array(head, cmap = "YlGnBu", vmin = hvmin, vmax = hvmax, alpha = 0.75)
-h_cb = plt.colorbar(h_ac, ax = ax1, label = "$h$ (m)", cax = xmf6.vis.cax(ax1, h_ac))
+h_cb = plt.colorbar(h_ac, ax = ax1, label = "", cax = xmf6.vis.cax(ax1, h_ac))
 h_cb.ax.tick_params(labelsize=6)
 ax1.set_title("$h$ (Mf6)", fontsize=10)
-ax1.set_ylabel("$y$ (m)", fontsize = 8)
-ax1.set_xlabel("$x$ (m)", fontsize = 8)
+ax1.set_ylabel("$y$ (m)", fontsize = 10)
+ax1.set_xlabel("$x$ (m)", fontsize = 10)
+ax1.set_xticks(ticks = xticks, labels = xticks, fontsize=7, rotation=45)
+ax1.set_yticks(ticks = yticks, labels = yticks, fontsize=7)
 ax1.set_aspect('equal')
 
 # --- Gráfica 2. ---
@@ -269,9 +276,12 @@ s_ac = sview.plot_array(SOL.reshape((dis['nrow'], dis['ncol'])), cmap = "YlGnBu"
 s_cb = plt.colorbar(s_ac, ax = ax2, label = "$h$ (m)", cax = xmf6.vis.cax(ax2, s_ac))
 s_cb.ax.tick_params(labelsize=6)
 ax2.set_title("$h$ (np.linalg.solve) ", fontsize=10)
-ax2.set_xlabel("$x$ (m)", fontsize = 8)
+ax2.set_xlabel("$x$ (m)", fontsize = 10)
+ax2.set_xticks(ticks = xticks, labels = xticks, fontsize=7, rotation=45)
+ax2.set_yticks(ticks = [], labels = [], fontsize=7)
 ax2.set_aspect('equal')
 
-plt.tight_layout()
+plt.suptitle(f"RMS = {ERMS:6.5f}")
+#plt.tight_layout()
 plt.show()
 
