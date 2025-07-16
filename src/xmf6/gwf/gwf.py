@@ -273,7 +273,7 @@ def set_packages(o_sim, silent = False, **kwargs):
     return o_gwf, packages
 
 
-def get_head(o_gwf):
+def get_head(o_gwf, binary = False):
     """
     Obtiene el vector de carga hidráulica.
     El archivo de donde se almacena la carga hidráulica debe
@@ -290,9 +290,13 @@ def get_head(o_gwf):
     """
     headfile = os.path.join(o_gwf.model_ws, f"{o_gwf.name}.hds")
     hds = flopy.utils.HeadFile(headfile)
-    return hds.get_data()
+    
+    if binary:
+        return hds, hds.get_data()
+    else:
+        return hds.get_data()
 
-def get_specific_discharge(o_gwf):
+def get_specific_discharge(o_gwf, binary = False):
     """
     Obtiene el vector de descarga específica.
     El archivo de donde se almacena el budget debe
@@ -312,7 +316,11 @@ def get_specific_discharge(o_gwf):
     spdis = bud.get_data(text="DATA-SPDIS")[0]
     qx, qy, qz = flopy.utils.postprocessing.get_specific_discharge(spdis, o_gwf)
     n_q = np.sqrt(np.square(qx[0]) + np.square(qy[0]) + np.square(qz[0]))
-    return qx, qy, qz, n_q
+    
+    if binary:
+        return bud, qx, qy, qz, n_q
+    else:
+        return qx, qy, qz, n_q
     
 def set_par(key_par, function, message, silent = False):
     """

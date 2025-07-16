@@ -136,7 +136,7 @@ o_sim.write_simulation(silent = False)
 o_sim.run_simulation()
 
 # --- Recuperamos los resultados de la simulación ---
-head = xmf6.gwf.get_head(o_gwf)
+head = xmf6.gwf.get_head(o_gwf, binary=True)
 
 headfile = os.path.join(o_gwf.model_ws, f"{o_gwf.name}.hds")
 hds = flopy.utils.HeadFile(headfile)
