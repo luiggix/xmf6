@@ -5,9 +5,11 @@ from .physpar import PhysPar
 from .tdis import TDis
 from .vis import plot, scatter
 import xmf6.gwf 
+import xmf6.api
 
 __all__ = ["MeshDis", 
            "nice_print", "info_array", "OFiles", "OSPar",
            "PhysPar", "TDis", "plot", "scatter",
-           "gwf"
+           "gwf",
+           "api"
            ]
