@@ -32,11 +32,8 @@ def init_sim(init, tdis, ims, silent = False):
         
     Return:
     -------
-    o_sim, o_tdis, o_ims: dict
-        Objetos de las componentes de la simulación 
-            - o_sim: flopy.mf6.modflow.mfsimulation.MFSimulation
-            - o_tdis: flopy.mf6.modflow.mftdis.ModflowTdis
-            - o_ims: flopy.mf6.modflow.mfims.ModflowIms
+    o_sim: flopy.mf6.modflow.mfsimulation.MFSimulation
+        Objeto para controlar la simulación.
     """
     par = set_par(init, get_sim_par, "\nsim configuration", silent)
     o_sim = flopy.mf6.MFSimulation(
@@ -273,7 +270,7 @@ def set_packages(o_sim, silent = False, **kwargs):
     return o_gwf, packages
 
 
-def get_head(o_gwf, binary = False):
+def get_head(o_gwf, binary = False, **par):
     """
     Obtiene el vector de carga hidráulica.
     El archivo de donde se almacena la carga hidráulica debe
@@ -284,19 +281,27 @@ def get_head(o_gwf, binary = False):
     o_gwf: flopy.mf6.modflow.mfgwf.ModflowGwf
         Objeto de la simulación de flujo.
 
+    binary: bool
+        Cuando es True regresa el objeto de tipo flopy.utils.binaryfile.HeadFile,
+        además del arrego de carga hidráulica. Valor por omisión: False.
+
+    **par: dict
+        Parámetros para la función get_data() del objeto flopy.utils.binaryfile.HeadFile.
+
     Return:
     -------
-    Vector de carga hidráulica.
+        Cuando binary = False: arreglo de carga hidráulica.
+        Cuando binary = True: objeto binario de tipo HeadFile y arreglo de carga hidráulica.
     """
     headfile = os.path.join(o_gwf.model_ws, f"{o_gwf.name}.hds")
     hds = flopy.utils.HeadFile(headfile)
     
     if binary:
-        return hds, hds.get_data()
+        return hds, hds.get_data(**par)
     else:
-        return hds.get_data()
+        return hds.get_data(**par)
 
-def get_specific_discharge(o_gwf, binary = False):
+def get_specific_discharge(o_gwf, binary = False, **par):
     """
     Obtiene el vector de descarga específica.
     El archivo de donde se almacena el budget debe
@@ -306,14 +311,22 @@ def get_specific_discharge(o_gwf, binary = False):
     -----------
     o_gwf: flopy.mf6.modflow.mfgwf.ModflowGwf
         Objeto de la simulación de flujo.
+        
+    binary: bool
+        Cuando es True regresa el objeto de tipo flopy.utils.binaryfile.CellBudgetFile,
+        además de los arreglos de la descarga específica. Valor por omisión: False.
+
+    **par: dict
+        Parámetros para la función get_data() del objeto flopy.utils.binaryfile.CellBudgetFile.
 
     Return:
     -------
-    Vectores: qx, qy, qz y n_q que es la norma del vector de flujo.
+        Cuando binary = False: arreglos de la descarga específica (qx, qy, qz y n_q que es la norma del vector de flujo).
+        Cuando binary = True: objeto binario de tipo HeadFile y arreglos de la descarga específica (qx, qy, qz y n_q que es la norma del vector de flujo).
     """
     budfile = os.path.join(o_gwf.model_ws, f"{o_gwf.name}.bud")
     bud  = flopy.utils.CellBudgetFile(budfile)
-    spdis = bud.get_data(text="DATA-SPDIS")[0]
+    spdis = bud.get_data(**par)[0]
     qx, qy, qz = flopy.utils.postprocessing.get_specific_discharge(spdis, o_gwf)
     n_q = np.sqrt(np.square(qx[0]) + np.square(qy[0]) + np.square(qz[0]))
     

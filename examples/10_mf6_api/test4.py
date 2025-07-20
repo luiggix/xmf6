@@ -53,7 +53,7 @@ init = {
 tdis = {
     'units': "DAYS",
     'nper' : 3,
-    'perioddata': [(1.0, 5, 1.0), (2.0, 3, 1.2), (3.0, 4, 1.1)] #[(1.0, 1, 1.0)]
+    'perioddata': [(1.0, 5, 1.0), (2.0, 3, 1.2), (3.0, 4, 1.1)] 
 }
 
 # Parámetros para la solución numérica (flopy.mf6.ModflowIms)
@@ -69,26 +69,26 @@ gwf = {
 # --- Paquetes del modelo de flujo ---
 lx = 25
 ly = 25
-nrow = int(input("nrow = "))
-ncol = int(input("ncol = "))
-if nrow > 10 or nrow < 0 or ncol > 10 or ncol < 0:
-    print("Este ejemplo está limitado a:")
-    print(" 0 < nrow =< 10")
-    print(" 0 < ncol =< 10")
-    sys.exit()
+nrow = 20 #int(input("nrow = "))
+ncol = 20 #int(input("ncol = "))
+#if nrow > 10 or nrow < 0 or ncol > 10 or ncol < 0:
+#    print("Este ejemplo está limitado a:")
+#    print(" 0 < nrow =< 10")
+#    print(" 0 < ncol =< 10")
+#    sys.exit()
 delr = lx / ncol
 delc = ly / nrow 
 
 # Parámetros para la discretización espacial (flopy.mf6.ModflowGwfdis)
 dis = {
     'length_units': "meters",
-    'nlay': 1, 
+    'nlay': 5, 
     'nrow': nrow, 
     'ncol': ncol,
     'delr': delr, 
     'delc': delc, 
-    'top' : 1.0, 
-    'botm': 0.0 
+    'top' : 0.0, 
+    'botm': [-2.0, -4.0, -6.0, -8.0, -10.0] 
 }
 
 # Parámetros para las condiciones iniciales (flopy.mf6.ModflowGwfic)
@@ -114,6 +114,20 @@ npf = {
     'k' : 0.01,
 }
 
+
+# === Pozo en el centro con caudal variable ===
+well_data = {
+    0: [[(1, 5, 5), -0.5]],
+    1: [[(1, 5, 5), -0.025]],
+    2: [[(1, 5, 5), -0.015]],
+}
+
+well = {
+    'stress_period_data': well_data,
+    'pname': "WEL-1",
+    'save_flows': True
+}
+
 # Parámetros para almacenar y mostrar la salida de la simulación (flopy.mf6.ModflowGwfoc)
 oc = {
     'budget_filerecord': f"{init['sim_name']}.bud",
@@ -127,7 +141,7 @@ o_sim = xmf6.gwf.init_sim(init = init, tdis = tdis, ims = ims, silent = True)
 
 # Configuración de los paquetes para el modelo de flujo
 o_gwf, package_list = xmf6.gwf.set_packages(o_sim, silent = True,
-                                            gwf = gwf, dis = dis, ic = ic, chd = chd, npf = npf, oc = oc)
+                                            gwf = gwf, dis = dis, ic = ic, chd = chd, npf = npf, well = well, oc = oc)
 
 # Escritura de los archivos de entrada
 o_sim.write_simulation(silent = False)
@@ -136,26 +150,67 @@ o_sim.write_simulation(silent = False)
 o_sim.run_simulation()
 
 # --- Recuperamos los resultados de la simulación ---
-head = xmf6.gwf.get_head(o_gwf, binary=True)
+head, harray = xmf6.gwf.get_head(o_gwf, binary=True)
+qx, qy, qz, n_q = xmf6.gwf.get_specific_discharge(o_gwf)
 
-headfile = os.path.join(o_gwf.model_ws, f"{o_gwf.name}.hds")
-hds = flopy.utils.HeadFile(headfile)
-budfile = os.path.join(o_gwf.model_ws, f"{o_gwf.name}.bud")
-bud  = flopy.utils.CellBudgetFile(budfile)
-
-head_x = o_gwf.output.head()
-
-print(type(head), type(head_x), type(hds), type(bud))
-
+print(harray.shape)
 # Obtener tiempos disponibles
-times = head_x.get_times()
+times = head.get_times()
 print("Tiempos disponibles:")
 [print(t) for t in times]
-
-otimes = bud.get_times()
-print("Tiempos disponibles:")
-[print(t) for t in otimes]
 
 # Obtener número de periodos y pasos
 nper = len(times)
 print(nper)
+
+# --- Parámetros para las gráficas ---
+grid = o_gwf.modelgrid
+x, y, z = grid.xyzcellcenters
+hvmin = np.nanmin(harray)
+hvmax = np.nanmax(harray)
+xticks = x[0]
+yticks = y[:,0]
+zticks = z[:,0,0]
+xlabels = [f'{x:1.1f}' for x in xticks]
+ylabels = [f'{y:1.1f}' for y in yticks]
+zlabels = [f'{z:1.1f}' for z in zticks]
+
+ilay = int(input("Capa [1,2,3,4,5] = ")) - 1
+
+# --- Definición de la figura ---
+fig, (ax1, ax2) = plt.subplots(1, 2, width_ratios=[1,1])
+
+# --- Gráfica 1. ---
+hview = flopy.plot.PlotMapView(model = o_gwf, ax = ax1)
+hview.plot_grid(linewidths = 0.5, alpha = 0.5)
+h_ac = hview.plot_array(harray[ilay,:,:], cmap = "YlGnBu", vmin = hvmin, vmax = hvmax, alpha = 0.75)
+h_cb = plt.colorbar(h_ac, ax = ax1, label = "", cax = xmf6.vis.cax(ax1, h_ac))
+h_cb.ax.tick_params(labelsize=6)
+
+# Visualización de los vectores de la descarga específica.
+ax1.quiver(x, y, qx[0], qy[0], scale = 0.05, 
+           color = 'k', linewidth = 0.95, pivot = 'middle')
+
+ax1.set_title("$h$ (Mf6)", fontsize=10)
+ax1.set_ylabel("$y$ (m)", fontsize = 8)
+ax2.set_xlabel("$x$ (m)", fontsize = 8)
+ax1.set_xticks(ticks = [], labels = [], fontsize=6, rotation=90)
+ax1.set_yticks(ticks = yticks, labels = yticks, fontsize=6)
+ax1.set_xticks(ticks = xticks, labels = xticks, fontsize=6, rotation=90)
+ax1.set_aspect('equal')
+
+# --- Gráfica 2. ---
+xz6 = flopy.plot.PlotCrossSection(model=o_gwf, ax = ax2, line={"row": 3})
+xz6.plot_grid(linewidths = 0.5, alpha = 0.5)
+xz6_ac = xz6.plot_array(harray, cmap = "YlGnBu", vmin = hvmin, vmax = hvmax, alpha = 0.75)
+xz6_cb = plt.colorbar(xz6_ac, ax = ax2, label = " ", cax = xmf6.vis.cax(ax2, xz6_ac))
+xz6_cb.ax.tick_params(labelsize=6)
+ax2.set_ylabel("$z$ (m)", fontsize = 8)
+ax2.set_xlabel("$x$ (m)", fontsize = 8)
+ax2.set_xticks(ticks = xticks, labels = xticks, fontsize=6, rotation=90)
+ax2.set_yticks(ticks = zticks, labels = zticks, fontsize=6)
+ax2.set_aspect('equal')
+
+plt.suptitle(f"Capa : {ilay+1}")
+plt.tight_layout()
+plt.show()
