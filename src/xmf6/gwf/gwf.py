@@ -11,7 +11,6 @@ mod_path = os.path.abspath(os.path.join("../.."))
 if mod_path not in sys.path:
     sys.path.append(mod_path)
 import xmf6
-from xmf6.common import set_par
 
 def set_packages(o_sim, silent = False, **kwargs):
     """
@@ -36,7 +35,7 @@ def set_packages(o_sim, silent = False, **kwargs):
         Objeto del modelo de flujo y diccionario con los paquetes agregados al modelo.
     """
     packages = {} # Diccionario de paquetes agregados
-    par = set_par(kwargs["gwf"], get_gwf_par, "\nnumerical model configuration", silent)
+    par = xmf6.common.set_par(kwargs["gwf"], get_gwf_par, "\nnumerical model configuration", silent)
     o_gwf = flopy.mf6.ModflowGwf(
         simulation = o_sim, 
         modelname=par["modelname"], 
