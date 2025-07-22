@@ -51,7 +51,7 @@ def set_packages(o_sim, silent = False, **kwargs):
     )
     
     if "dis" in kwargs:
-        par = set_par(kwargs["dis"], get_dis_par, "\nspatial discretization configuration", silent)
+        par = xmf6.common.set_par(kwargs["dis"], get_dis_par, "\nspatial discretization configuration", silent)
         o_dis = flopy.mf6.ModflowGwfdis(
             model = o_gwf,
             loading_package=par["loading_package"], 
@@ -75,7 +75,7 @@ def set_packages(o_sim, silent = False, **kwargs):
         packages["dis"] = o_dis
 
     if "ic" in kwargs:
-        par = set_par(kwargs["ic"], get_ic_par, "\ninitial conditions configuration", silent)
+        par = xmf6.common.set_par(kwargs["ic"], get_ic_par, "\ninitial conditions configuration", silent)
         o_ic = flopy.mf6.ModflowGwfic(
             model = o_gwf,
             loading_package=par["loading_package"], 
@@ -88,7 +88,7 @@ def set_packages(o_sim, silent = False, **kwargs):
         packages["ic"] = o_ic
 
     if "chd" in kwargs:
-        par = set_par(kwargs["chd"], get_chd_par, "\nboundary conditions configuration", silent)
+        par = xmf6.common.set_par(kwargs["chd"], get_chd_par, "\nboundary conditions configuration", silent)
         o_chd = flopy.mf6.ModflowGwfchd(
             model = o_gwf,
             loading_package=par["loading_package"], 
@@ -109,7 +109,7 @@ def set_packages(o_sim, silent = False, **kwargs):
         packages["chd"] = o_chd
 
     if "npf" in kwargs:
-        par = set_par(kwargs["npf"], get_npf_par, "\nflow properties configuration", silent)
+        par = xmf6.common.set_par(kwargs["npf"], get_npf_par, "\nflow properties configuration", silent)
         o_npf = flopy.mf6.ModflowGwfnpf(
             model = o_gwf,
             loading_package=par["loading_package"], 
@@ -139,7 +139,7 @@ def set_packages(o_sim, silent = False, **kwargs):
         packages["npf"] = o_npf
 
     if "oc" in kwargs:
-        par = set_par(kwargs["oc"], get_oc_par, "\noutput configuration", silent)
+        par = xmf6.common.set_par(kwargs["oc"], get_oc_par, "\noutput configuration", silent)
         o_oc = flopy.mf6.ModflowGwfoc(
             model = o_gwf,
             loading_package=par["loading_package"], 
@@ -155,7 +155,7 @@ def set_packages(o_sim, silent = False, **kwargs):
         packages["oc"] = o_oc
 
     if "well" in kwargs:
-        par = set_par(kwargs["well"], get_well_par, "\nwells configuration", silent)
+        par = xmf6.common.set_par(kwargs["well"], get_well_par, "\nwells configuration", silent)
         o_well = flopy.mf6.ModflowGwfwel(
             model = o_gwf,
             loading_package=par["loading_package"], 
