@@ -48,7 +48,7 @@ def init_sim(init, tdis, ims, silent = False):
         write_headers = par["write_headers"]
     )
 
-    par = set_par(tdis, get_time_par, "\ntime configuration", silent)     
+    par = set_par(tdis, get_tdis_par, "\ntime configuration", silent)     
     o_tdis = flopy.mf6.ModflowTdis(
         simulation = o_sim,  
         loading_package = par["loading_package"], 
