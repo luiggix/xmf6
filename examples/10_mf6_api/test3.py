@@ -5,38 +5,6 @@ import flopy
 from modflowapi import ModflowApi
 import xmf6
 
-def build_mat(mf6):
-    """
-    Construye la matriz del sistema.
-
-    Parameters
-    ----------
-    mf6: ModflowApi
-        Objeto para accedar a toda la funcionalidad de la API.
-    """
-    # Obtiene el número de renglones y columnas del sistema
-    NCOL = mf6.get_value(mf6.get_var_address("NCOL", 'SLN_1'))
-    NROW = mf6.get_value(mf6.get_var_address("NROW", 'SLN_1'))
-
-    # Obtiene los coeficientes de la matriz en formato CRS (Compressed Row Storage)
-    # A: Coeficientes, JA: índices de la columna, IA: índice de inicio del renglón en JA.
-    A = mf6.get_value(mf6.get_var_address("AMAT", 'SLN_1'))
-    IA = mf6.get_value(mf6.get_var_address("IA", 'SLN_1'))
-    JA = mf6.get_value(mf6.get_var_address("JA", 'SLN_1'))
-
-    # Arreglo para almacenar la matriz en formato completo.
-    Atest = np.zeros((NROW[0], NCOL[0]))
-    idx = 0
-    i = 0
-    istart = IA[0] # Inicio del renglón en IA
-    for iend in IA[1:]: # Iteramos por cada renglón
-        for j in range(istart, iend): # Recorremos todos los elementos del renglón
-            Atest[idx, JA[j-1]-1] = A[i] # Agregamos el coeficiente en la matriz completa
-            i += 1
-        istart = iend
-        idx += 1
-    return Atest, A, IA, JA # Regresamos la matriz densa y en el formato CRS
-
 # --- Preparación de la simulación ---
 
 # --- Componentes ---
@@ -194,7 +162,7 @@ while current_time < end_time:
         kiter += 1
 
     # En este momento podemos construir la matriz del sistema
-    A, _, _, _ = build_mat(mf6)
+    A, _, _, _ = xmf6.api.build_mat(mf6)
     RHS = mf6.get_value(mf6.get_var_address("RHS", 'SLN_1'))
     print("A:\n", A)
     print("RHS:", RHS)

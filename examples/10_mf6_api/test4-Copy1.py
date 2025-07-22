@@ -199,7 +199,7 @@ while current_time < end_time:
         kiter += 1
 
     # En este momento podemos construir la matriz del sistema
-    A, _, _, _ = build_mat(mf6)
+    A, _, _, _ = xmf6.api.build_mat(mf6)
     RHS = mf6.get_value(mf6.get_var_address("RHS", 'SLN_1'))
     print("A:\n", A)
     print("RHS:", RHS)
