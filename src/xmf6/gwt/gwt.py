@@ -183,72 +183,10 @@ def set_packages(o_sim, silent = False, **kwargs):
 
     return o_gwt, packages
 
-
-def get_head(o_gwf, binary = False, **par):
-    """
-    Obtiene el vector de carga hidráulica.
-    El archivo de donde se almacena la carga hidráulica debe
-    tener extension ".hds"
-
-    Parameters:
-    -----------
-    o_gwf: flopy.mf6.modflow.mfgwf.ModflowGwf
-        Objeto de la simulación de flujo.
-
-    binary: bool
-        Cuando es True regresa el objeto de tipo flopy.utils.binaryfile.HeadFile,
-        además del arrego de carga hidráulica. Valor por omisión: False.
-
-    **par: dict
-        Parámetros para la función get_data() del objeto flopy.utils.binaryfile.HeadFile.
-
-    Return:
-    -------
-        Cuando binary = False: arreglo de carga hidráulica.
-        Cuando binary = True: objeto binario de tipo HeadFile y arreglo de carga hidráulica.
-    """
-    headfile = os.path.join(o_gwf.model_ws, f"{o_gwf.name}.hds")
-    hds = flopy.utils.HeadFile(headfile)
-    
-    if binary:
-        return hds, hds.get_data(**par)
-    else:
-        return hds.get_data(**par)
-
-def get_specific_discharge(o_gwf, binary = False, **par):
-    """
-    Obtiene el vector de descarga específica.
-    El archivo de donde se almacena el budget debe
-    tener extension ".bud"
-
-    Parameters:
-    -----------
-    o_gwf: flopy.mf6.modflow.mfgwf.ModflowGwf
-        Objeto de la simulación de flujo.
-        
-    binary: bool
-        Cuando es True regresa el objeto de tipo flopy.utils.binaryfile.CellBudgetFile,
-        además de los arreglos de la descarga específica. Valor por omisión: False.
-
-    **par: dict
-        Parámetros para la función get_data() del objeto flopy.utils.binaryfile.CellBudgetFile.
-
-    Return:
-    -------
-        Cuando binary = False: arreglos de la descarga específica (qx, qy, qz y n_q que es la norma del vector de flujo).
-        Cuando binary = True: objeto binario de tipo HeadFile y arreglos de la descarga específica (qx, qy, qz y n_q que es la norma del vector de flujo).
-    """
-    budfile = os.path.join(o_gwf.model_ws, f"{o_gwf.name}.bud")
-    bud  = flopy.utils.CellBudgetFile(budfile)
-    spdis = bud.get_data(**par)[0]
-    qx, qy, qz = flopy.utils.postprocessing.get_specific_discharge(spdis, o_gwf)
-    n_q = np.sqrt(np.square(qx[0]) + np.square(qy[0]) + np.square(qz[0]))
-    
-    if binary:
-        return bud, qx, qy, qz, n_q
-    else:
-        return qx, qy, qz, n_q
-
+def get_concentration(sim, t):
+    ucnobj_mf6 = sim.transport.output.concentration()
+    simconc = ucnobj_mf6.get_data(totim=t).flatten()
+    return simconc
 
 def get_gwt_par():
     return dict(modelname='model', 
