@@ -109,7 +109,7 @@ def set_packages(o_sim, silent = False, **kwargs):
     if "adv" in kwargs:
         par = xmf6.common.set_par(kwargs["adv"], get_adv_par, "\nTODO: what is ADV?", silent)
         o_adv = flopy.mf6.ModflowGwtadv(
-            model = o_gwf,
+            model = o_gwt,
             loading_package=par["loading_package"], 
             scheme=par["scheme"],
             filename=par["filename"], 
@@ -167,7 +167,7 @@ def set_packages(o_sim, silent = False, **kwargs):
     if "oc" in kwargs:
         par = xmf6.common.set_par(kwargs["oc"], get_oc_par, "\noutput configuration", silent)
         o_oc = flopy.mf6.ModflowGwtoc(
-            model = o_gwf,            
+            model = o_gwt,            
             loading_package=par["loading_package"], 
             budget_filerecord=par["budget_filerecord"], 
             budgetcsv_filerecord=par["budgetcsv_filerecord"], 
