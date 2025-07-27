@@ -1,1 +1,0 @@
-make sure to extract the compressed MetaSWAP database 'LHM2018_v02vrz_BOFEK2012.zip' into this folder (it will contain only the soil type required for this simulation)

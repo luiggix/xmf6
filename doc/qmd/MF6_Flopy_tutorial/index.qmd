@@ -1,3 +1,0 @@
-# Introducción {.unnumbered}
-
-Cuadernos interactivos para MODFLOW 6  + Flopy
