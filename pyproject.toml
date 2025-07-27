@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "xmf6"
-version = "0.1.0"
+version = "0.2.0"
 description = "Biblioteca con herramientas para MODFLOW 6 y Flopy."
 authors = [{ name = "Luis Miguel de la Cruz Salas", email = "luiggi@igeofisica.unam.mx" }]
 readme = "README.md"
