@@ -191,6 +191,48 @@ def get_ims_par():
                  parent_file=None
                )
 
+
+def set_obs(model, obs, silent = False):
+    """
+    Iniciliza los puntos de observación de la simulación.
+    
+    Parameters:
+    -----------
+    obs: dict
+        Diccionario de inicialización de la simulación.
+
+    silent: bool
+        Cuando es True se imprime toda la información.
+        
+    Return:
+    -------
+    o_obs: flopy.mf6.ModflowUtlobs
+        Objeto para definir los puntos de observación.
+    """
+    par = set_par(obs, get_obs_par, "\nsim configuration", silent)
+    o_obs = flopy.mf6.ModflowUtlobs(
+        model = model,
+        loading_package=par["loading_package"], 
+        digits=par["digits"], 
+        print_input=par["print_input"], 
+        continuous=par["continuous"], 
+        filename=par["filename"], 
+        pname=par["pname"], 
+        parent_file=par["parent_file"]
+    )
+    return o_obs
+    
+def get_obs_par():
+    return dict(loading_package=False, 
+                digits=None, 
+                print_input=None, 
+                continuous=None, 
+                filename=None, 
+                pname=None, 
+                parent_file=None
+               )
+
+
 if __name__ == '__main__':
     init = {
         'sim_name' : "flow",

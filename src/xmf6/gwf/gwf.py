@@ -48,6 +48,7 @@ def set_packages(o_sim, silent = False, **kwargs):
         print_flows=par["print_flows"], 
         save_flows=par["save_flows"], 
         newtonoptions=par["newtonoptions"], 
+#        packages=par["packages"],    
     )
     
     if "dis" in kwargs:
@@ -431,7 +432,7 @@ if __name__ == '__main__':
     }
 
     # Configuración de los paquetes para el modelo de flujo
-    o_gwf, package_list = xmf6.gwf.set_packages(o_sim, silent = True,
+    o_gwf, package_list = set_packages(o_sim, silent = True,
                                             gwf = gwf, dis = dis, ic = ic, chd = chd, npf = npf, oc = oc)
 
     print(o_gwf)

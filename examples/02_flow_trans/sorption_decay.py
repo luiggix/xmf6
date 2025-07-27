@@ -1,3 +1,27 @@
+def get_mst_dict(phys):
+    mst = dict(
+        porosity = phys["porosity"],
+        sorption = None,
+        bulk_density = None,
+        distcoef = None, 
+        first_order_decay = None,
+        decay = None,
+        decay_sorbed = None
+    )
+    
+    if phys["retardation_factor"] > 1.0:
+        mst["sorption"] = "linear"
+        mst["bulk_density"] = 1.0
+        mst["distcoef"] = (phys["retardation_factor"] - 1.0) * phys["porosity"] / mst["bulk_density"]
+
+    if phys["decay_rate"] != 0.0:
+        mst["first_order_decay"] = True
+        mst["decay"] = phys["decay_rate"]
+        if phys["retardation_factor"] > 1.0:
+            mst["decay_sorbed"] = phys["decay_rate"]
+
+    return mst
+
 def get_sorption_dict(retardation_factor):
     sorption = None
     bulk_density = None
