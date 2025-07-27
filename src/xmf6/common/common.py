@@ -209,7 +209,7 @@ def set_obs(model, obs, silent = False):
     o_obs: flopy.mf6.ModflowUtlobs
         Objeto para definir los puntos de observación.
     """
-    par = set_par(obs, get_obs_par, "\nsim configuration", silent)
+    par = set_par(obs, get_obs_par, "\nOBS configuration", silent)
     
     o_obs = flopy.mf6.ModflowUtlobs(
         model,
@@ -250,9 +250,9 @@ if __name__ == '__main__':
     
     ims = {}
 
-    o_sim = init_sim(init = init, tdis = tdis, ims = ims, silent = False)   
-    print(o_sim.ims)
-    print(o_sim.tdis)
+    o_sim = init_sim(init = init, tdis = tdis, ims = ims, silent = True)   
+#    print(o_sim.ims)
+#    print(o_sim.tdis)
 
 
     gwt = { 
@@ -288,12 +288,12 @@ if __name__ == '__main__':
 
     
     # Configuración de los paquetes para el modelo de flujo
-    o_gwt, package_list = xmf6.gwt.set_packages(o_sim, silent = False,
+    o_gwt, package_list = xmf6.gwt.set_packages(o_sim, silent = True,
                                        gwt = gwt)#, dis = dis)#, ic = ic, oc = oc)
 
-    print(o_gwt)
-    print(o_gwt.get_package_list())
-    print(package_list.keys())
+#    print(o_gwt)
+#    print(o_gwt.get_package_list())
+#    print(package_list.keys())
 
 
     obs = {
@@ -308,4 +308,4 @@ if __name__ == '__main__':
     }  
     }
 
-    o_obs = set_obs(o_gwt, obs)
+    o_obs = set_obs(o_gwt, obs, silent = False)
