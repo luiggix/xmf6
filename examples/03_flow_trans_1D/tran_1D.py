@@ -85,7 +85,7 @@ def build_gwt_1D(mesh, tdis, ph_par, ml_units, os_par, oc_par):
     # Definimos la componente para el tiempo
     flopy.mf6.ModflowTdis(
         sim, 
-        nper=tdis.nper(), 
+        nper=tdis.nper, 
         perioddata=tdis.perioddata(), 
         time_units=ml_units["time"]
     )
@@ -170,14 +170,18 @@ def build_gwt_1D(mesh, tdis, ph_par, ml_units, os_par, oc_par):
             ("X1105", "CONCENTRATION", (0, 0, 110)),
         ],
     }
+
+    print(obs_data)
     
-    flopy.mf6.ModflowUtlobs(
+    obs = flopy.mf6.ModflowUtlobs(
         gwt, 
         digits=10, 
         print_input=True, 
         continuous=obs_data
     )
 
+    print(obs)
+    
     # Paquete para la salida
     flopy.mf6.ModflowGwtoc(
         gwt,

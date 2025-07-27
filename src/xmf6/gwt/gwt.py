@@ -414,6 +414,8 @@ if __name__ == '__main__':
         'printrecord': [("HEAD", "ALL")]
     }
 
+
+    
     # Configuración de los paquetes para el modelo de flujo
     o_gwt, package_list = set_packages(o_sim, silent = False,
                                        gwt = gwt)#, dis = dis)#, ic = ic, oc = oc)
@@ -421,3 +423,17 @@ if __name__ == '__main__':
     print(o_gwt)
     print(o_gwt.get_package_list())
     print(package_list.keys())
+
+    obs = {
+    "digits" : 10, 
+    "print_input" : True, 
+    "continuous" : {
+        "transporte.obs.csv": [
+            ("X005", "CONCENTRATION", (0, 0, 0)),
+            ("X405", "CONCENTRATION", (0, 0, 40)),
+            ("X1105", "CONCENTRATION", (0, 0, 110)),
+        ],
+    }  
+    }
+
+    o_obs = xmf6.common.set_obs(o_gwt, obs)

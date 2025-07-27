@@ -210,8 +210,9 @@ def set_obs(model, obs, silent = False):
         Objeto para definir los puntos de observación.
     """
     par = set_par(obs, get_obs_par, "\nsim configuration", silent)
+    
     o_obs = flopy.mf6.ModflowUtlobs(
-        model = model,
+        model,
         loading_package=par["loading_package"], 
         digits=par["digits"], 
         print_input=par["print_input"], 
@@ -252,3 +253,59 @@ if __name__ == '__main__':
     o_sim = init_sim(init = init, tdis = tdis, ims = ims, silent = False)   
     print(o_sim.ims)
     print(o_sim.tdis)
+
+
+    gwt = { 
+        'modelname': init["sim_name"],
+        'save_flows': True
+    }
+    
+    # Parámetros para la discretización espacial (flopy.mf6.ModflowGwfdis)
+    dis = {
+        'length_units' : "centimeters",
+        'nlay': 1, 
+        'nrow': 1, 
+        'ncol': 120,
+        'delr': 0.1, 
+        'delc': 0.1, 
+        'top' : 1.0, 
+        'botm': 0.0 
+    }
+
+    ic = {
+        'strt': 0.0
+    }
+
+
+    # Parámetros para almacenar y mostrar la salida de la simulación (flopy.mf6.ModflowGwtoc)
+    oc = {
+        'budget_filerecord': f"{init['sim_name']}.bud",
+        'head_filerecord': f"{init['sim_name']}.hds",
+        'saverecord': [("HEAD", "ALL"), ("BUDGET", "ALL")],
+        'printrecord': [("HEAD", "ALL")]
+    }
+
+
+    
+    # Configuración de los paquetes para el modelo de flujo
+    o_gwt, package_list = xmf6.gwt.set_packages(o_sim, silent = False,
+                                       gwt = gwt)#, dis = dis)#, ic = ic, oc = oc)
+
+    print(o_gwt)
+    print(o_gwt.get_package_list())
+    print(package_list.keys())
+
+
+    obs = {
+    "digits" : 10, 
+    "print_input" : True, 
+    "continuous" : {
+        "transporte.obs.csv": [
+            ("X005", "CONCENTRATION", (0, 0, 0)),
+            ("X405", "CONCENTRATION", (0, 0, 40)),
+            ("X1105", "CONCENTRATION", (0, 0, 110)),
+        ],
+    }  
+    }
+
+    o_obs = set_obs(o_gwt, obs)

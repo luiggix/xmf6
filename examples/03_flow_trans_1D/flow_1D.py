@@ -43,7 +43,7 @@ def build_gwf_1D(mesh, tdis, ph_par, ml_units, os_par, oc_par):
     # Definimos la componente para el tiempo
     flopy.mf6.ModflowTdis(
         sim, 
-        nper=tdis.nper(), 
+        nper=tdis.nper, 
         perioddata=tdis.perioddata(), 
         time_units=ml_units["time"]
     )
