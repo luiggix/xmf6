@@ -12,7 +12,7 @@ if mod_path not in sys.path:
     sys.path.append(mod_path)
 import xmf6
 
-def init_sim(init, tdis, ims, silent = False):
+def init_sim(init, tdis, ims = None, silent = False):
     """
     Iniciliza la simulación con las componentes del tiempo y la solución numérica.
     
@@ -61,44 +61,45 @@ def init_sim(init, tdis, ims, silent = False):
         pname = par["pname"]
     )
 
-    par = set_par(ims, get_ims_par, "\nnumerical solution configuration", silent)
-    o_ims = flopy.mf6.ModflowIms(
-        simulation = o_sim, 
-        loading_package=par["loading_package"], 
-        print_option=par["print_option"], 
-        complexity=par["complexity"], 
-        csv_output_filerecord=par["csv_output_filerecord"], 
-        csv_outer_output_filerecord=par["csv_outer_output_filerecord"], 
-        csv_inner_output_filerecord=par["csv_inner_output_filerecord"], 
-        no_ptcrecord=par["no_ptcrecord"], 
-        outer_hclose=par["outer_hclose"], 
-        outer_dvclose=par["outer_dvclose"], 
-        outer_rclosebnd=par["outer_rclosebnd"], 
-        outer_maximum=par["outer_maximum"], 
-        under_relaxation=par["under_relaxation"], 
-        under_relaxation_gamma=par["under_relaxation_gamma"], 
-        under_relaxation_theta=par["under_relaxation_theta"], 
-        under_relaxation_kappa=par["under_relaxation_kappa"], 
-        under_relaxation_momentum=par["under_relaxation_momentum"], 
-        backtracking_number=par["backtracking_number"], 
-        backtracking_tolerance=par["backtracking_tolerance"], 
-        backtracking_reduction_factor=par["backtracking_reduction_factor"], 
-        backtracking_residual_limit=par["backtracking_residual_limit"], 
-        inner_maximum=par["inner_maximum"], 
-        inner_hclose=par["inner_hclose"], 
-        inner_dvclose=par["inner_dvclose"], 
-        rcloserecord=par["rcloserecord"], 
-        linear_acceleration=par["linear_acceleration"], 
-        relaxation_factor=par["relaxation_factor"], 
-        preconditioner_levels=par["preconditioner_levels"], 
-        preconditioner_drop_tolerance=par["preconditioner_drop_tolerance"], 
-        number_orthogonalizations=par["number_orthogonalizations"], 
-        scaling_method=par["scaling_method"], 
-        reordering_method=par["reordering_method"], 
-        filename=par["filename"], 
-        pname=par["pname"], 
-        parent_file=par["parent_file"]
-    )
+    if ims != None:
+        par = set_par(ims, get_ims_par, "\nnumerical solution configuration", silent)
+        o_ims = flopy.mf6.ModflowIms(
+            simulation = o_sim, 
+            loading_package=par["loading_package"], 
+            print_option=par["print_option"], 
+            complexity=par["complexity"], 
+            csv_output_filerecord=par["csv_output_filerecord"], 
+            csv_outer_output_filerecord=par["csv_outer_output_filerecord"], 
+            csv_inner_output_filerecord=par["csv_inner_output_filerecord"], 
+            no_ptcrecord=par["no_ptcrecord"], 
+            outer_hclose=par["outer_hclose"], 
+            outer_dvclose=par["outer_dvclose"], 
+            outer_rclosebnd=par["outer_rclosebnd"], 
+            outer_maximum=par["outer_maximum"], 
+            under_relaxation=par["under_relaxation"], 
+            under_relaxation_gamma=par["under_relaxation_gamma"], 
+            under_relaxation_theta=par["under_relaxation_theta"], 
+            under_relaxation_kappa=par["under_relaxation_kappa"], 
+            under_relaxation_momentum=par["under_relaxation_momentum"], 
+            backtracking_number=par["backtracking_number"], 
+            backtracking_tolerance=par["backtracking_tolerance"], 
+            backtracking_reduction_factor=par["backtracking_reduction_factor"], 
+            backtracking_residual_limit=par["backtracking_residual_limit"], 
+            inner_maximum=par["inner_maximum"], 
+            inner_hclose=par["inner_hclose"], 
+            inner_dvclose=par["inner_dvclose"], 
+            rcloserecord=par["rcloserecord"], 
+            linear_acceleration=par["linear_acceleration"], 
+            relaxation_factor=par["relaxation_factor"], 
+            preconditioner_levels=par["preconditioner_levels"], 
+            preconditioner_drop_tolerance=par["preconditioner_drop_tolerance"], 
+            number_orthogonalizations=par["number_orthogonalizations"], 
+            scaling_method=par["scaling_method"], 
+            reordering_method=par["reordering_method"], 
+            filename=par["filename"], 
+            pname=par["pname"], 
+            parent_file=par["parent_file"]
+        )
 
     return o_sim
     
@@ -251,6 +252,8 @@ if __name__ == '__main__':
     ims = {}
 
     o_sim = init_sim(init = init, tdis = tdis, ims = ims, silent = True)   
+#    o_sim = init_sim(init = init, tdis = tdis, silent = True)   
+
 #    print(o_sim.ims)
 #    print(o_sim.tdis)
 
