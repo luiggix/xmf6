@@ -385,8 +385,8 @@ if __name__ == '__main__':
     print(o_sim.tdis)
 
     gwf = { 
-        'modelname': init["sim_name"],
-        'model_nam_file': f"{init["sim_name"]}.nam",
+        'modelname': init['sim_name'],
+        'model_nam_file': f"{init['sim_name']}.nam",
         'save_flows': True
     }
     
