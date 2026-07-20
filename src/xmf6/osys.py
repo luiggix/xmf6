@@ -31,6 +31,12 @@ def nice_print(data, message = ''):
     print(Fore.BLUE + fmt1.format(size * chr(0x2015)) + Style.RESET_ALL)
 
 
+def find_index(ls, ks, sk): 
+    """
+    Encuentra el índice donde esta la cadena (ks) y salta (sk) al renglón donde comienza la info
+    """
+    return [n for n, l in enumerate(ls) if ks in l][0] + sk
+
 class OSPar():
     """
     Clase para definición del espacio de trabajo, nombre del ejecutable de MF6,
