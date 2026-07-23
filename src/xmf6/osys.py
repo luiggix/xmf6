@@ -28,7 +28,10 @@ def nice_print(data, message = ''):
                 print(fmt2.format("  ", l))
         else:
             print(fmt2.format(k, v))
-    print(Fore.BLUE + fmt1.format(size * chr(0x2015)) + Style.RESET_ALL)
+    if data:
+        print(Fore.BLUE + fmt1.format(size * chr(0x2015)) + Style.RESET_ALL)
+    else:
+        print(Style.RESET_ALL)
 
 
 def find_index(ls, ks, sk): 
