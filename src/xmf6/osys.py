@@ -7,7 +7,7 @@ import flopy
 def info_array(x): 
     print(f' tipo  : {type(x)} \n dtype : {x.dtype} \n dim   : {x.ndim} \n shape : {x.shape} \n size(bytes) : {x.itemsize} \n size(elements) : {x.size}')
 
-def nice_print(data, message = ''):
+def nice_print(message = '', data = {}):
     size = len(message)
     fmt1 = '{:^'+str(size)+'}'
 
