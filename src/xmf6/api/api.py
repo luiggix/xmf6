@@ -12,7 +12,7 @@ if mod_path not in sys.path:
     sys.path.append(mod_path)
 import xmf6
 
-def build_mat(mf6):
+def build_mat(mf6, IMS = "SLN_1"):
     """
     Construye la matriz del sistema.
 
@@ -20,6 +20,9 @@ def build_mat(mf6):
     ----------
     mf6: ModflowApi
         Objeto para accedar a toda la funcionalidad de la API.
+
+    IMS: string
+        Cadena que indica el sistema lineal: "SLN_1", "SLN_2", etc...
 
     Return
     ------
@@ -30,14 +33,14 @@ def build_mat(mf6):
         Arreglos de numpy con la información de la matriz en formato CRS
     """
     # Obtiene el número de renglones y columnas del sistema
-    NCOL = mf6.get_value(mf6.get_var_address("NCOL", "SLN_1"))
-    NROW = mf6.get_value(mf6.get_var_address("NROW", "SLN_1"))
+    NCOL = mf6.get_value(mf6.get_var_address("NCOL", IMS))
+    NROW = mf6.get_value(mf6.get_var_address("NROW", IMS))
 
     # Obtiene los coeficientes de la matriz en formato CRS (Compressed Row Storage)
     # A: Coeficientes, JA: índices de la columna, IA: índice de inicio del renglón en JA.
-    A = mf6.get_value(mf6.get_var_address("AMAT", "SLN_1"))
-    IA = mf6.get_value(mf6.get_var_address("IA", "SLN_1"))
-    JA = mf6.get_value(mf6.get_var_address("JA", "SLN_1"))
+    A = mf6.get_value(mf6.get_var_address("AMAT", IMS))
+    IA = mf6.get_value(mf6.get_var_address("IA", IMS))
+    JA = mf6.get_value(mf6.get_var_address("JA", IMS))
 
     # Arreglo para almacenar la matriz en formato completo.
     Atest = np.zeros((NROW[0], NCOL[0]))
