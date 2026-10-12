@@ -7,6 +7,12 @@ import flopy
 def info_array(x): 
     print(f' tipo  : {type(x)} \n dtype : {x.dtype} \n dim   : {x.ndim} \n shape : {x.shape} \n size(bytes) : {x.itemsize} \n size(elements) : {x.size}')
 
+def __print_data_array(fmt2, k, v):
+    print(fmt2.format(k, Fore.BLUE + chr(0x2015) + chr(0x2015) + " data array " \
+                      + chr(0x2015) + chr(0x2015) + Style.RESET_ALL ))
+    for l in v:
+        print(fmt2.format("  ", l))
+
 def nice_print(message = '', data = {}):
     size = len(message)
     fmt1 = '{:^'+str(size)+'}'
@@ -22,10 +28,19 @@ def nice_print(message = '', data = {}):
     print(fmt1.format(size * chr(0x2015)) + Style.RESET_ALL)
     for k,v in data.items():
         if isinstance(v, list) or isinstance(v, np.ndarray) or isinstance(v, tuple):
-            print(fmt2.format(k, Fore.BLUE + chr(0x2015) + chr(0x2015) + " data array " \
+            __print_data_array(fmt2, k, v)
+#            print(fmt2.format(k, Fore.BLUE + chr(0x2015) + chr(0x2015) + " data array " \
+#                              + chr(0x2015) + chr(0x2015) + Style.RESET_ALL ))
+#            for l in v:
+#                print(fmt2.format("  ", l))
+        elif isinstance(v, dict):
+            print(fmt2.format(k, Fore.BLUE + chr(0x2015) + chr(0x2015) + " dict info " \
                               + chr(0x2015) + chr(0x2015) + Style.RESET_ALL ))
-            for l in v:
-                print(fmt2.format("  ", l))
+            for k1, v1 in data.items():
+                if isinstance(v, list) or isinstance(v, np.ndarray) or isinstance(v, tuple):
+                    __print_data_array(fmt2, k1, v1)
+                else:
+                    print(fmt2.format(k, v))
         else:
             print(fmt2.format(k, v))
     if data:
