@@ -8,11 +8,14 @@ def info_array(x):
     print(f' tipo  : {type(x)} \n dtype : {x.dtype} \n dim   : {x.ndim} \n shape : {x.shape} \n size(bytes) : {x.itemsize} \n size(elements) : {x.size}')
 
 def __print_data_array(fmt2, k, v):
-    print(fmt2.format(k, Fore.BLUE + chr(0x2015) + chr(0x2015) + " data array " \
+    print(fmt2.format(k, Fore.BLUE + chr(0x2015) + chr(0x2015) + " INIT data array " \
                       + chr(0x2015) + chr(0x2015) + Style.RESET_ALL ))
     for l in v:
         print(fmt2.format("  ", l))
-
+        
+    print(fmt2.format(k, Fore.BLUE + chr(0x2015) + chr(0x2015) + " END data array " \
+                      + chr(0x2015) + chr(0x2015) + Style.RESET_ALL ))
+    
 def nice_print(message = '', data = {}):
     size = len(message)
     fmt1 = '{:^'+str(size)+'}'
@@ -34,13 +37,16 @@ def nice_print(message = '', data = {}):
 #            for l in v:
 #                print(fmt2.format("  ", l))
         elif isinstance(v, dict):
-            print(fmt2.format(k, Fore.BLUE + chr(0x2015) + chr(0x2015) + " dict info " \
+            print(fmt2.format(k, Fore.BLUE + chr(0x2015) + chr(0x2015) + " INIT dict info " \
                               + chr(0x2015) + chr(0x2015) + Style.RESET_ALL ))
             for k1, v1 in v.items():
                 if isinstance(v1, list) or isinstance(v1, np.ndarray) or isinstance(v1, tuple):
                     __print_data_array(fmt2, k1, v1)
                 else:
                     print(fmt2.format(k1, v1))
+                    
+            print(fmt2.format(k, Fore.BLUE + chr(0x2015) + chr(0x2015) + " END dict info " \
+                              + chr(0x2015) + chr(0x2015) + Style.RESET_ALL ))
         else:
             print(fmt2.format(k, v))
     if data:
