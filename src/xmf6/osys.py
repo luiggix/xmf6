@@ -36,11 +36,11 @@ def nice_print(message = '', data = {}):
         elif isinstance(v, dict):
             print(fmt2.format(k, Fore.BLUE + chr(0x2015) + chr(0x2015) + " dict info " \
                               + chr(0x2015) + chr(0x2015) + Style.RESET_ALL ))
-            for k1, v1 in data.items():
-                if isinstance(v, list) or isinstance(v, np.ndarray) or isinstance(v, tuple):
+            for k1, v1 in v.items():
+                if isinstance(v1, list) or isinstance(v1, np.ndarray) or isinstance(v1, tuple):
                     __print_data_array(fmt2, k1, v1)
                 else:
-                    print(fmt2.format(k, v))
+                    print(fmt2.format(k1, v1))
         else:
             print(fmt2.format(k, v))
     if data:
