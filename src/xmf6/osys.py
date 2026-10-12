@@ -8,12 +8,12 @@ def info_array(x):
     print(f' tipo  : {type(x)} \n dtype : {x.dtype} \n dim   : {x.ndim} \n shape : {x.shape} \n size(bytes) : {x.itemsize} \n size(elements) : {x.size}')
 
 def __print_data_array(fmt2, k, v):
-    print(fmt2.format(k, Fore.MAGENTA + chr(0x2015) + chr(0x2015) + " INIT data array " \
+    print(fmt2.format(k, Fore.MAGENTA + chr(0x2015) + chr(0x2015) + " INIT " + k + " "\
                       + chr(0x2015) + chr(0x2015) + Style.RESET_ALL ))
     for l in v:
         print(fmt2.format("  ", l))
         
-    print(fmt2.format("", Fore.MAGENTA + chr(0x2015) + chr(0x2015) + " END " + k \
+    print(fmt2.format("", Fore.MAGENTA + chr(0x2015) + chr(0x2015) + " END " + k + " "\
                       + chr(0x2015) + chr(0x2015) + Style.RESET_ALL ))
     
 def nice_print(message = '', data = {}):
@@ -33,7 +33,7 @@ def nice_print(message = '', data = {}):
         if isinstance(v, list) or isinstance(v, np.ndarray) or isinstance(v, tuple):
             __print_data_array(fmt2, k, v)
         elif isinstance(v, dict):
-            print(fmt2.format(k, Fore.GREEN + chr(0x2015) + chr(0x2015) + " INIT dict info " \
+            print(fmt2.format(k, Fore.GREEN + chr(0x2015) + chr(0x2015) + " INIT " + k + " " \
                               + chr(0x2015) + chr(0x2015) + Style.RESET_ALL ))
             for k1, v1 in v.items():
                 if isinstance(v1, list) or isinstance(v1, np.ndarray) or isinstance(v1, tuple):
@@ -41,7 +41,7 @@ def nice_print(message = '', data = {}):
                 else:
                     print(fmt2.format(k1, v1))
                     
-            print(fmt2.format("", Fore.GREEN + chr(0x2015) + chr(0x2015) + " END " + k \
+            print(fmt2.format("", Fore.GREEN + chr(0x2015) + chr(0x2015) + " END " + k + " "\
                               + chr(0x2015) + chr(0x2015) + Style.RESET_ALL ))
         else:
             print(fmt2.format(k, v))
