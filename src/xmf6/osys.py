@@ -13,7 +13,7 @@ def __print_data_array(fmt2, k, v):
     for l in v:
         print(fmt2.format("  ", l))
         
-    print(fmt2.format(k, Fore.MAGENTA + chr(0x2015) + chr(0x2015) + " END data array " \
+    print(fmt2.format("", Fore.MAGENTA + chr(0x2015) + chr(0x2015) + " END " + k \
                       + chr(0x2015) + chr(0x2015) + Style.RESET_ALL ))
     
 def nice_print(message = '', data = {}):
@@ -41,7 +41,7 @@ def nice_print(message = '', data = {}):
                 else:
                     print(fmt2.format(k1, v1))
                     
-            print(fmt2.format(k, Fore.GREEN + chr(0x2015) + chr(0x2015) + " END dict info " \
+            print(fmt2.format("", Fore.GREEN + chr(0x2015) + chr(0x2015) + " END " + k \
                               + chr(0x2015) + chr(0x2015) + Style.RESET_ALL ))
         else:
             print(fmt2.format(k, v))
